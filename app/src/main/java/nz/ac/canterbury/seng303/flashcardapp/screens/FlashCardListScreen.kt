@@ -76,18 +76,20 @@ fun CardItem(navController: NavController, card: FlashCard, deleteCardFn: (id: I
                     color = Color.White,
                     cornerRadius = CornerRadius(15.dp.toPx()),
                 )
-            }
-            .border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
-        Arrangement.spacedBy(20.dp)
+            },
+//        Arrangement.spacedBy(20.dp)
     ){
-        Text(text = card.question)
+        Text(text = card.question,
+            modifier = Modifier.padding(10.dp)
+                .fillMaxWidth())
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
                 .clickable { navController.navigate("NoteCard/${card.id}") },
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+//            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.spacedBy(50.dp)
         ) {
             IconButton(
                 modifier = Modifier.drawBehind {

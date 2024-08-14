@@ -148,7 +148,7 @@ fun Home(navController: NavController) {
                     color = Color.Cyan,
                     cornerRadius = CornerRadius(15.dp.toPx()),
                 ) }
-            .border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
+            .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
