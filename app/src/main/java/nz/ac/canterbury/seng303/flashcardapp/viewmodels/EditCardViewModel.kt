@@ -13,11 +13,11 @@ class EditCardViewModel:ViewModel() {
         question = newQuestion
     }
 
-    var listAns = mutableStateListOf("","","","")
+    var listAns = mutableListOf("","","","")
         private set
 
     fun updateAnswer(index: Int, newAnswer: String) {
-        if (index in listAns.indices) {
+        if (index < listAns.size) {
             listAns[index] = newAnswer
         }
     }
