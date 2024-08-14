@@ -12,12 +12,12 @@ class CreateCardViewModel: ViewModel() {
         question = newQuestion
     }
 
-    var listAns = mutableStateListOf("","","","")
+    var listAns = listOf("","","","")
         private set
 
     fun setAnswers(newAnswers: MutableList<String>) {
-        listAns.clear()
-        listAns.addAll(newAnswers)
+        listAns.toMutableList().clear()
+        listAns.toMutableList().addAll(newAnswers)
     }
 
     var correctAns by mutableStateOf("")
