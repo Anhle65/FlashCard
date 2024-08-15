@@ -12,14 +12,27 @@ data class FlashCard (
                 FlashCard(
                     1,
                     "Is today wednesday",
-                    mutableListOf("True", "False","Not sure"),
+                    mutableListOf("True", "False"," Not sure"),
                     "true",
+                    false
+                ),
+                FlashCard(
+                    2,
+                    "What is the color",
+                    mutableListOf("Blue", "Green", "Yellow"),
+                    "Green",
+                    false
+                ),
+                FlashCard(
+                    3,
+                    "Where is the cat",
+                    mutableListOf("Sofa", "Bedroom", "Don't know", "Kitchen"),
+                    "Sofa",
                     false
                 )
             )
         }
     }
-
     override fun getIdentifier(): Int {
         return id;
     }
