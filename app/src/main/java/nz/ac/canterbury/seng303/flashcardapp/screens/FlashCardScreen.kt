@@ -1,11 +1,17 @@
 package nz.ac.canterbury.seng303.flashcardapp.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
@@ -40,38 +46,53 @@ fun FlashCardScreen(cardId: String, cardViewModel: FlashCardViewModel){
         modifier = Modifier
             .padding(16.dp)
             .fillMaxWidth()
+            .fillMaxSize()
             .drawBehind {
                 drawRoundRect(
                     color = Color.Cyan,
                     cornerRadius = CornerRadius(15.dp.toPx()),
                 )
             }
+            .border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Text(text = "Play flash cards",
+            style = MaterialTheme.typography.headlineLarge,
+            modifier = Modifier
+                .padding(16.dp))
         if (card != null) {
-            Text(text = "Question: ${card.question}", style = MaterialTheme.typography.headlineMedium)
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
-            )
-//            Text(
-//                text = "Content:",
-//                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
-//            )
-            Text(
-                text = card.question,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(4.dp, 0.dp, 0.dp, 0.dp)
-            )
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .drawBehind {
+                    drawRoundRect(
+                        color = Color.LightGray,
+                        cornerRadius = CornerRadius(10.dp.toPx())
+                    )}
+                .border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(16.dp))
+            ){
+                Text(text = "${card.question}",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+//                        .drawBehind {
+//                            drawRoundRect(
+//                                color = Color.LightGray,
+//                                cornerRadius = CornerRadius(10.dp.toPx())
+//                            )
+//                        }
+                )
+            }
             var listAnswers by remember { mutableStateOf(card.listAnswer.toMutableList()) }
             LazyColumn {
                 items (listAnswers.size) { index ->
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                            .fillMaxWidth()
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(20.dp),
                     ) {
                         var selectedAnswer by rememberSaveable { mutableStateOf("") }
                         RadioButton(
@@ -82,8 +103,10 @@ fun FlashCardScreen(cardId: String, cardViewModel: FlashCardViewModel){
                                 unselectedColor = Color.Gray
                             )
                         )
+                        Text(text = card.listAnswer[index])
+                        Log.d("Flash card screen", "selected answer: $selectedAnswer")
                     }
-                    Divider() // Add a divider between items
+                     // Add a divider between items
                 }
             }
         } else {
