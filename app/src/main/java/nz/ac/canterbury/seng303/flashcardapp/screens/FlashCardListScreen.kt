@@ -1,6 +1,8 @@
 package nz.ac.canterbury.seng303.flashcardapp.screens
 
 import android.app.AlertDialog
+import android.app.SearchManager
+import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -34,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import nz.ac.canterbury.seng303.flashcardapp.models.FlashCard
 import nz.ac.canterbury.seng303.flashcardapp.viewmodels.FlashCardViewModel
+
 
 @Composable
 fun FlashCardListScreen(navController: NavController, cardViewModel: FlashCardViewModel) {
@@ -80,15 +83,15 @@ fun CardItem(navController: NavController, card: FlashCard, deleteCardFn: (id: I
 //        Arrangement.spacedBy(20.dp)
     ){
         Text(text = card.question,
-            modifier = Modifier.padding(10.dp)
+            modifier = Modifier
+                .padding(10.dp)
                 .fillMaxWidth())
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
-                .clickable { navController.navigate("NoteCard/${card.id}") },
+                .clickable { navController.navigate("FlashCard/${card.id}") },
             verticalAlignment = Alignment.CenterVertically,
-//            horizontalArrangement = Arrangement.SpaceBetween
             horizontalArrangement = Arrangement.spacedBy(50.dp)
         ) {
             IconButton(
@@ -99,8 +102,12 @@ fun CardItem(navController: NavController, card: FlashCard, deleteCardFn: (id: I
                     )
                 },
                 onClick = {
-                    //navController.navigate("EditCard/${card.id}")
-                    Log.d("LIST_CARD", "Click on search button")
+                    val searchQuery = "${card.question}"    //Extract the query that will be parsed to the search intent
+                    val searchIntent = Intent(Intent.ACTION_WEB_SEARCH).apply {
+                        putExtra(SearchManager.QUERY, searchQuery)                    // Pass the string to search bar for searching
+                    }
+                    context.startActivity(searchIntent)         // Launch the search activity
+                    Log.d("LIST_CARD", "Click on search button and search for ${card.question}")
                 })
             {
                 Icon(
@@ -109,7 +116,6 @@ fun CardItem(navController: NavController, card: FlashCard, deleteCardFn: (id: I
                     tint = Color.White
                 )
             }
-
             IconButton(
                 modifier = Modifier.drawBehind {
                     drawRoundRect(
@@ -140,7 +146,6 @@ fun CardItem(navController: NavController, card: FlashCard, deleteCardFn: (id: I
                     .setCancelable(false)
                     .setPositiveButton("Delete") { dialog, id ->
                         deleteCardFn(card.id)
-//                        Toast.makeText(context, "Can't do that just yet! we'll learn to handle state this lab", Toast.LENGTH_SHORT).show()
                         dialog.dismiss()
                     }
                     .setNegativeButton("Cancel") { dialog, id ->
@@ -149,7 +154,7 @@ fun CardItem(navController: NavController, card: FlashCard, deleteCardFn: (id: I
                     }
                 val alert = builder.create()
                 alert.show()
-            }) {
+                }) {
                 Icon(
                     imageVector = Icons.Outlined.Delete,
                     contentDescription = "Delete",
