@@ -67,8 +67,8 @@ class FlashCardViewModel(private val cardStorage: Storage<FlashCard>): ViewModel
             .collect { _cards.emit(it) }
     }
 
-    fun editCard(noteId: Int, note: FlashCard) = viewModelScope.launch {
-        cardStorage.edit(noteId, note).collect()
+    fun editCard(cardId: Int, note: FlashCard) = viewModelScope.launch {
+        cardStorage.edit(cardId, note).collect()
         cardStorage.getAll().catch { Log.e("CARD_VIEW_MODEL", it.toString()) }
             .collect { _cards.emit(it) }
     }
