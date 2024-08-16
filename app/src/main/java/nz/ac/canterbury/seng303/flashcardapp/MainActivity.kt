@@ -38,6 +38,7 @@ import androidx.navigation.navArgument
 import nz.ac.canterbury.seng303.flashcardapp.screens.CreateFlashCardScreen
 import nz.ac.canterbury.seng303.flashcardapp.screens.FlashCardListScreen
 import nz.ac.canterbury.seng303.flashcardapp.screens.FlashCardScreen
+import nz.ac.canterbury.seng303.flashcardapp.screens.PlayFlashCardScreen
 import nz.ac.canterbury.seng303.flashcardapp.ui.theme.FlashcardappTheme
 import nz.ac.canterbury.seng303.flashcardapp.viewmodels.CreateCardViewModel
 import nz.ac.canterbury.seng303.flashcardapp.viewmodels.EditCardViewModel
@@ -53,6 +54,7 @@ class MainActivity : ComponentActivity() {
         cardViewModel.loadDefaultNotesIfNoneExist()
         enableEdgeToEdge()
         setContent {
+//            enableEdgeToEdge()
             val editFlashCardViewModel: EditCardViewModel = viewModel()
             FlashcardappTheme {
                 val navController = rememberNavController()
@@ -75,7 +77,7 @@ class MainActivity : ComponentActivity() {
                     Box(modifier = Modifier.padding(it)) {
                         NavHost(navController = navController, startDestination = "Home") {
                             composable("Home") {
-                                Home(navController = navController)
+                                FlashCard(navController = navController)
                             }
                             composable(
                                 "FlashCard/{cardId}",
@@ -83,8 +85,11 @@ class MainActivity : ComponentActivity() {
                                     type = NavType.StringType
                                 })
                             ) { backStackEntry ->
-                                val noteId = backStackEntry.arguments?.getString("noteId")
-                                noteId?.let { cardIdParam: String -> FlashCardScreen(cardIdParam, cardViewModel) }
+                                val cardId = backStackEntry.arguments?.getString("cardId")
+                                cardId?.let { cardIdParam: String -> FlashCardScreen(cardIdParam, cardViewModel) }
+                            }
+                            composable("PlayFlashCard"){
+                                PlayFlashCardScreen(navController, cardViewModel = cardViewModel)
                             }
                             composable("CreateFlashCards") {
                                 val createCardViewModel: CreateCardViewModel = viewModel()
@@ -139,26 +144,28 @@ fun GreetingPreview() {
 }
 
 @Composable
-fun Home(navController: NavController) {
+fun FlashCard(navController: NavController) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .padding(16.dp)
             .drawBehind {
                 drawRoundRect(
                     color = Color.Cyan,
                     cornerRadius = CornerRadius(15.dp.toPx()),
-                ) }
+                )
+            }
             .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(onClick = { navController.navigate("ViewFlashCards") }) {
+        Button(onClick = { navController.navigate("CardList") }) {
             Text("View Flash Cards")
         }
         Button(onClick = { navController.navigate("CreateFlashCards") }) {
             Text("Create Flash Cards")
         }
-        Button(onClick = { navController.navigate("CardList") }) {
+        Button(onClick = { navController.navigate("PlayFlashCard") }) {
             Text("Play Flash Card")
         }
     }
