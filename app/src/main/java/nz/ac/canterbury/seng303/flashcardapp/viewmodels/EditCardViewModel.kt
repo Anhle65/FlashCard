@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import nz.ac.canterbury.seng303.flashcardapp.models.FlashCard
 
 class EditCardViewModel:ViewModel() {
     var question by mutableStateOf("")
@@ -27,5 +28,13 @@ class EditCardViewModel:ViewModel() {
 
     fun updateCorrectAnswer(newAnswer: String) {
         correctAns = newAnswer
+    }
+
+    fun setDefaultValues(selectedCard: FlashCard?) {
+        selectedCard?.let {
+            question = it.question
+            listAns = it.listAnswer
+            correctAns = it.correctAnswer
+        }
     }
 }
