@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng303.flashcardapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -21,6 +22,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -35,6 +38,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import nz.ac.canterbury.seng303.flashcardapp.models.FlashCard
 import nz.ac.canterbury.seng303.flashcardapp.screens.CreateFlashCardScreen
 import nz.ac.canterbury.seng303.flashcardapp.screens.FlashCardListScreen
 import nz.ac.canterbury.seng303.flashcardapp.screens.FlashCardScreen
@@ -51,7 +55,7 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        cardViewModel.loadDefaultNotesIfNoneExist()
+        cardViewModel.loadDefaultCardsIfNoneExist()
         enableEdgeToEdge()
         setContent {
 //            enableEdgeToEdge()
@@ -102,6 +106,8 @@ class MainActivity : ComponentActivity() {
                                     createCardFn = {question, listAnswer, correctAns -> cardViewModel.createCard(question, listAnswer, correctAns)})
                             }
                             composable("CardList") {
+                                val listCards: List<FlashCard> by cardViewModel.cards.collectAsState(emptyList())
+                                Log.d("CARDLIST", "Number of question in storage is: ${listCards.size}")
                                 FlashCardListScreen(navController, cardViewModel)
                             }
 //                            composable(
