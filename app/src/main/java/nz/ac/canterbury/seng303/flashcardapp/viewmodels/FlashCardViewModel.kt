@@ -32,14 +32,15 @@ class FlashCardViewModel(private val cardStorage: Storage<FlashCard>): ViewModel
             .collect { _cards.emit(it) }
     }
 
-    fun loadDefaultNotesIfNoneExist() = viewModelScope.launch {
+    // This only to test the app but should be removed when the app is launched
+    fun loadDefaultCardsIfNoneExist() = viewModelScope.launch {
         val currentCards = cardStorage.getAll().first()
         if (currentCards.isEmpty()) {
-            Log.d("CARD_VIEW_MODEL", "Inserting default notes...")
+            Log.d("CARD_VIEW_MODEL", "Inserting default cards...")
             cardStorage.insertAll(FlashCard.getCards())
-                .catch { Log.w("CARD_VIEW_MODEL", "Could not insert default notes") }
+                .catch { Log.w("CARD_VIEW_MODEL", "Could not insert default cards") }
                 .collect {
-                    Log.d("CARD_VIEW_MODEL", "Default notes inserted successfully")
+                    Log.d("CARD_VIEW_MODEL", "Default cards inserted successfully")
                     _cards.emit(FlashCard.getCards())
                 }
         }
@@ -52,7 +53,6 @@ class FlashCardViewModel(private val cardStorage: Storage<FlashCard>): ViewModel
                 question = question,
                 listAnswer = listAnswer,
                 correctAnswer = correctAns,
-                false
             )
             cardStorage.insert(card).catch { Log.e("CARD_VIEW_MODEL", "Could not create card") }
                 .collect()
