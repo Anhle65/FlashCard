@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,19 +37,20 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import nz.ac.canterbury.seng303.flashcardapp.viewmodels.CreateCardViewModel
 
 @Composable
 fun CreateFlashCardScreen(navController: NavController,
                           question: String,
                           onQuestionChange: (String) -> Unit,
-//                          listAnswer: MutableList<String>,
+                          listAnswer: MutableList<String>,
                           onListAnswerChange: (MutableList<String>) -> Unit,
                           onCrrAnswerChange: (String) -> Unit,
                           createCardFn: (String, MutableList<String>, String) -> Unit
 ) {
     val context = LocalContext.current
     var crrAns = ""
-    var listAns by rememberSaveable { mutableStateOf(listOf(mutableStateOf(""), mutableStateOf(""), mutableStateOf(""), mutableStateOf("")))}
+    var listAnswers by rememberSaveable { mutableStateOf(listOf(mutableStateOf(""), mutableStateOf(""), mutableStateOf(""), mutableStateOf("")))}
     var checked by remember { mutableStateOf(listOf(mutableStateOf(false), mutableStateOf(false), mutableStateOf(false), mutableStateOf(false))) }
     LazyColumn (
         modifier = Modifier
@@ -67,7 +67,7 @@ fun CreateFlashCardScreen(navController: NavController,
             .border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
 //            .verticalScroll(true),
         verticalArrangement = Arrangement.spacedBy(10.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ){
         item {
             Text(text = "Add a new flash card",
@@ -97,8 +97,8 @@ fun CreateFlashCardScreen(navController: NavController,
                     }
             )
         }
-        items(listAns.size) { index ->
-            Log.d("Card Screen", "Answer $(listAns[index])")
+        items(listAnswers.size) { index ->
+            Log.d("Card Screen", "Answer ${listAnswers.size}, size of input list ${listAnswer.size}, each element is $listAnswer")
             Box(
                 modifier = Modifier
                     .fillMaxSize(),
@@ -112,14 +112,20 @@ fun CreateFlashCardScreen(navController: NavController,
                 ){
                     Checkbox(
                         checked = checked[index].value,
-                        onCheckedChange = { checked[index].value = it
-                        crrAns = listAns[index].value}
+                        onCheckedChange = {
+                            checked[index].value = it
+                            if (checked[index].value == false) {
+                                crrAns = ""
+                            } else {
+                                crrAns = listAnswers[index].value
+                            }
+                        }
                     )
                     Log.d("Card Screen", "Correct ans is $crrAns")
                     OutlinedTextField(
-                        value = listAns[index].value,
-                        onValueChange = {listAns[index].value = it},
-//                                        listAnswer[index] = it},
+                        value = listAnswers[index].value,
+                        onValueChange = {listAnswers[index].value = it
+                                listAnswer[index] = it},
                         label = { Text("Empty answer now") },
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
@@ -130,14 +136,15 @@ fun CreateFlashCardScreen(navController: NavController,
                                 )
                             }
                         )
-                    Log.e("Create", "changed value $listAns")
+                    Log.e("Create", "changed value $listAnswers")
                 }
             }
         }
         item {
             Button(
                 onClick = {
-                    listAns = listAns.toMutableList().apply { add(mutableStateOf("")) }
+                    listAnswer.add("")
+                    listAnswers = listAnswers.toMutableList().apply { add(mutableStateOf("")) }
                     checked = checked.toMutableList().apply { add(mutableStateOf(false)) }},
                 modifier = Modifier
                     .padding(8.dp)
@@ -163,23 +170,23 @@ fun CreateFlashCardScreen(navController: NavController,
                             "Could not create a flash card without question",
                             Toast.LENGTH_SHORT
                         ).show()
-                    } else if (listAns == emptyList<String>()) {
+                    } else if (listAnswer.all { it.isEmpty() }) {
                         Toast.makeText(
                             context,
-                            "Could not create a flash card without answer",
+                            "Could not create a flash card without answers",
                             Toast.LENGTH_SHORT
                         ).show()
 
                     } else if (crrAns == "") {
                         Toast.makeText(
                             context,
-                            "Could not create a flash card without correct answer",
+                            "You need to choose 1 correct answer",
                             Toast.LENGTH_SHORT
                         ).show()
                     } else {
                         builder.setMessage("Created Card: $question")
                             .setPositiveButton("Ok") { dialog, id -> /* Run some code on click */
-                                createCardFn(question,listAns.toMutableList(), crrAns)
+                                createCardFn(question, listAnswer, crrAns)
                                 onQuestionChange("")
                                 onCrrAnswerChange("")
                                 onListAnswerChange(emptyList<String>().toMutableList())
