@@ -15,8 +15,8 @@ class CreateCardViewModel: ViewModel() {
         question = newQuestion
     }
 
-//    var listAns =  mutableListOf("","","","")
-    var listAns by mutableStateOf(listOf("", "", "", "" ))
+    var listAns =  mutableListOf("","","","")
+//    var listAns by mutableStateOf(listOf("", "", "", "" ))
         private set
 
     fun setAnswers(newAnswers: MutableList<String>) {
