@@ -47,6 +47,7 @@ fun FlashCardScreen(cardId: String, cardViewModel: FlashCardViewModel){
     cardViewModel.getCardById(cardId = cardId.toIntOrNull())
     val selectedCardState by cardViewModel.selectedCard.collectAsState(null)
     val card: FlashCard? = selectedCardState
+    var selectedAnswer by rememberSaveable { mutableStateOf("") }
     if (card != null) {
         var listAnswers by remember { mutableStateOf(card.listAnswer.toMutableList()) }
         LazyColumn(
@@ -97,7 +98,7 @@ fun FlashCardScreen(cardId: String, cardViewModel: FlashCardViewModel){
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(20.dp),
                 ) {
-                    var selectedAnswer by rememberSaveable { mutableStateOf("") }
+//                    var selectedAnswer by rememberSaveable { mutableStateOf("") }
                     RadioButton(
                         selected = selectedAnswer == listAnswers[index],
                         onClick = { selectedAnswer = listAnswers[index] },
@@ -122,6 +123,12 @@ fun FlashCardScreen(cardId: String, cardViewModel: FlashCardViewModel){
                     Text(text = "$currentQuestion/$totalQuestion")
                     Button(
                         onClick = { currentQuestion += 1
+                            if(selectedAnswer == card.correctAnswer)
+                            {
+                                Log.d("PLAY_FLASH_CARD", "You are correct")
+                            } else {
+                                Log.d("PLAY_FLASH_CARD", "You choose wrong answer")
+                            }
                         }) {
                         Text(text = "Submit")
                     }
