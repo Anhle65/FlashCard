@@ -40,6 +40,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import nz.ac.canterbury.seng303.flashcardapp.models.FlashCard
 import nz.ac.canterbury.seng303.flashcardapp.screens.CreateFlashCardScreen
+import nz.ac.canterbury.seng303.flashcardapp.screens.EditFlashCard
 import nz.ac.canterbury.seng303.flashcardapp.screens.FlashCardListScreen
 import nz.ac.canterbury.seng303.flashcardapp.screens.FlashCardScreen
 import nz.ac.canterbury.seng303.flashcardapp.screens.PlayFlashCardScreen
@@ -107,24 +108,25 @@ class MainActivity : ComponentActivity() {
                             }
                             composable("CardList") {
                                 val listCards: List<FlashCard> by cardViewModel.cards.collectAsState(emptyList())
-                                Log.d("CARDLIST", "Number of question in storage is: ${listCards.size}")
+                                Log.d("CARD_LIST", "Number of question in storage is: ${listCards.size}")
                                 FlashCardListScreen(navController, cardViewModel)
                             }
-//                            composable(
-//                                "EditNote/{noteId}",
-//                                arguments = listOf(navArgument("noteId") {
-//                                    type = NavType.StringType
-//                                })
-//                            ) {
-//                                    backStackEntry ->
-//                                val noteId = backStackEntry.arguments?.getString("noteId")
-//                                noteId?.let {
-//                                    EditNote(navController = navController,
-//                                        noteId = noteId,
-//                                        editNoteViewModel = editNoteViewModel,
-//                                        noteViewModel = noteViewModel
-//                                    )}
-//                            }
+                            composable(
+                                "EditCard/{cardId}",
+                                arguments = listOf(navArgument("cardId") {
+                                    type = NavType.StringType
+                                })
+                            ) {
+                                    backStackEntry ->
+                                val cardId = backStackEntry.arguments?.getString("cardId")
+                                cardId?.let {
+                                    EditFlashCard(navController = navController,
+                                        cardId = cardId,
+                                        editCardViewModel = editFlashCardViewModel,
+                                        cardViewModel = cardViewModel
+                                    )
+                                }
+                            }
                         }
                     }
                 }
