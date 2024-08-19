@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
@@ -33,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import nz.ac.canterbury.seng303.flashcardapp.models.FlashCard
@@ -42,13 +45,14 @@ import nz.ac.canterbury.seng303.flashcardapp.viewmodels.FlashCardViewModel
 fun FlashCardScreen(cardId: String, cardViewModel: FlashCardViewModel){
     cardViewModel.getCards()
     val listCards: List<FlashCard> by cardViewModel.cards.collectAsState(emptyList())
-    var totalQuestion = listCards.size
+    val totalQuestion = listCards.size
     var currentQuestion by rememberSaveable { mutableStateOf(1)}
     cardViewModel.getCardById(cardId = cardId.toIntOrNull())
     val selectedCardState by cardViewModel.selectedCard.collectAsState(null)
     val card: FlashCard? = selectedCardState
     if (card != null) {
-        var listAnswers by remember { mutableStateOf(card.listAnswer.toMutableList()) }
+        val listAnswers by rememberSaveable { mutableStateOf(card.listAnswer.toMutableList()) }
+        val (selectedAnswer, onOptionSelected) = rememberSaveable { mutableStateOf("") }
         LazyColumn(
             modifier = Modifier
                 .padding(16.dp)
@@ -61,7 +65,7 @@ fun FlashCardScreen(cardId: String, cardViewModel: FlashCardViewModel){
                         cornerRadius = CornerRadius(16.dp.toPx()),
                     )
                 }
-                .border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
+                .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -87,27 +91,25 @@ fun FlashCardScreen(cardId: String, cardViewModel: FlashCardViewModel){
                             .padding(16.dp)
                     )
                 }
-//                    var listAnswers by remember { mutableStateOf(card.listAnswer.toMutableList()) }
             }
             items (listAnswers.size) { index ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .padding(horizontal = 16.dp)
+                        .padding(16.dp)
                         .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(20.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
-                    var selectedAnswer by rememberSaveable { mutableStateOf("") }
                     RadioButton(
-                        selected = selectedAnswer == listAnswers[index],
-                        onClick = { selectedAnswer = listAnswers[index] },
+                        selected = (listAnswers[index] == selectedAnswer),   //Set the sellected answer
+                        onClick = { onOptionSelected(listAnswers[index]) },
                         colors = RadioButtonDefaults.colors(
                             selectedColor = MaterialTheme.colorScheme.primary,
                             unselectedColor = Color.Gray
                         )
                     )
-                    Text(text = card.listAnswer[index])
-                    Log.d("Flash card screen", "selected answer: $selectedAnswer")
+                    Text(text = listAnswers[index])
+                    Log.d("Flash card screen", "selected answer: $selectedAnswer correct answer is ${card.correctAnswer}")
                 }
             }
             item {
@@ -115,13 +117,17 @@ fun FlashCardScreen(cardId: String, cardViewModel: FlashCardViewModel){
                     .padding(16.dp)
                     .fillMaxHeight()
                     .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(20.dp),
-                    verticalAlignment = Alignment.CenterVertically.apply { Alignment.BottomEnd }
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
                 )
                 {
                     Text(text = "$currentQuestion/$totalQuestion")
                     Button(
-                        onClick = { currentQuestion += 1
+                        onClick = {
+                            if (selectedAnswer == card.correctAnswer) {
+                                Log.d("CARD_SCREEN", "YOU ARE CORRECT")
+                            } else {
+                                Log.d("CARD_SCREEN", "YOU ARE WRONG")
+                            }
                         }) {
                         Text(text = "Submit")
                     }
