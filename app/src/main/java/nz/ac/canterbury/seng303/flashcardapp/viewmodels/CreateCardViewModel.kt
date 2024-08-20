@@ -24,6 +24,12 @@ class CreateCardViewModel: ViewModel() {
         listAns.toMutableList().addAll(newAnswers)
     }
 
+    fun updateAnswer(index: Int, newAnswer: String) {
+        if (index < listAns.size) {
+            listAns.toMutableList()[index] = newAnswer
+        }
+    }
+
     var correctAns by mutableStateOf("")
         private set
 
