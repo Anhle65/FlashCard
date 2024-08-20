@@ -14,12 +14,13 @@ class EditCardViewModel:ViewModel() {
         question = newQuestion
     }
 
-    var listAns = mutableListOf("","","","")
+//    var listAns = mutableListOf("","","","")
+    var listAns by mutableStateOf(listOf("", "", "", "" ))
         private set
 
     fun updateAnswer(index: Int, newAnswer: String) {
         if (index < listAns.size) {
-            listAns[index] = newAnswer
+            listAns.toMutableList()[index] = newAnswer
         }
     }
 
@@ -28,6 +29,11 @@ class EditCardViewModel:ViewModel() {
 
     fun updateCorrectAnswer(newAnswer: String) {
         correctAns = newAnswer
+    }
+
+    fun setAnswers(newAnswers: MutableList<String>) {
+        listAns.toMutableList().clear()
+        listAns.toMutableList().addAll(newAnswers)
     }
 
     fun setDefaultValues(selectedCard: FlashCard?) {
