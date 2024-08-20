@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng303.flashcardapp.screens
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +22,7 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -33,7 +35,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import nz.ac.canterbury.seng303.flashcardapp.models.FlashCard
@@ -44,107 +48,158 @@ fun PlayFlashCardScreen(navController: NavController, cardViewModel: FlashCardVi
     cardViewModel.getCards()
     val listCards: List<FlashCard> by cardViewModel.cards.collectAsState(emptyList())
     val totalQuestion = listCards.size
-    var currentQuestion by rememberSaveable { mutableStateOf(1)}
+    var shuffledAnswers by remember { mutableStateOf(listOf<String>()) }
+    var currentQuestion by rememberSaveable { mutableStateOf(0)}
+    var selectedAnswer by rememberSaveable { mutableStateOf("")}
+    val context = LocalContext.current
+
+
 //    cardViewModel.getCardById(cardId = cardId.toIntOrNull())
 //    val selectedCardState by cardViewModel.selectedCard.collectAsState(null)
 //    val card: FlashCard? = selectedCardState
-    if (listCards.size > 0) {
-        for (card in listCards) {
-            navController.navigate("FlashCard/${card.id}}")
-//            var listAnswers by remember { mutableStateOf(card.listAnswer.toMutableList()) }
-//            val listAnswers = card.listAnswer
-//            LazyColumn(
-//                modifier = Modifier
-//                    .padding(16.dp)
-//                    .fillMaxWidth()
-//                    .fillMaxHeight()
-//                    .fillMaxSize()
-//                    .drawBehind {
-//                        drawRoundRect(
-//                            color = Color.Cyan,
-//                            cornerRadius = CornerRadius(16.dp.toPx()),
-//                        )
-//                    }
-//                    .border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
-//                verticalArrangement = Arrangement.spacedBy(10.dp),
-//                horizontalAlignment = Alignment.CenterHorizontally
-//            ) {
-//                item {
-//                    Text(
-//                        text = "Play flash cards",
-//                        style = MaterialTheme.typography.headlineLarge,
-//                        modifier = Modifier
-//                            .padding(16.dp)
-//                    )
-//                }
-//                item {
-//                    Box(modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(16.dp)
-//                        .drawBehind {
-//                            drawRoundRect(
-//                                color = Color.LightGray,
-//                                cornerRadius = CornerRadius(10.dp.toPx())
-//                            )
-//                        }
-//                        .border(
-//                            width = 1.dp,
-//                            color = Color.Black,
-//                            shape = RoundedCornerShape(10.dp)
-//                        )
-//                    ) {
-//                        Text(
-//                            text = "${card.question}",
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .padding(16.dp)
-//                        )
-//                    }
-////                    var listAnswers by remember { mutableStateOf(card.listAnswer.toMutableList()) }
-//                }
-//                items(listAnswers.size) { index ->
-//                    Row(
-//                        verticalAlignment = Alignment.CenterVertically,
-//                        modifier = Modifier
-//                            .padding(horizontal = 16.dp)
-//                            .fillMaxWidth(),
-//                        horizontalArrangement = Arrangement.spacedBy(20.dp),
-//                    ) {
-//                        var selectedAnswer by rememberSaveable { mutableStateOf("") }
-//                        RadioButton(
-//                            selected = selectedAnswer == listAnswers[index],
-//                            onClick = { selectedAnswer = listAnswers[index] },
-//                            colors = RadioButtonDefaults.colors(
-//                                selectedColor = MaterialTheme.colorScheme.primary,
-//                                unselectedColor = Color.Gray
-//                            )
-//                        )
-//                        Text(text = card.listAnswer[index])
-//                        Log.d("Flash card screen", "selected answer: $selectedAnswer")
-//                    }
-//                }
-//                item {
-                    Row(modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxHeight()
-                        .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(20.dp),
-                        verticalAlignment = Alignment.CenterVertically.apply { Alignment.BottomEnd }
+//    Column (modifier = Modifier
+//        .padding(16.dp)
+//        .fillMaxWidth()
+//        .fillMaxHeight()
+//        .drawBehind {
+//            drawRoundRect(
+//                color = Color.Cyan,
+//                cornerRadius = CornerRadius(16.dp.toPx()),
+//            )
+//        }
+//        .border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(16.dp))
+//    ) {
+    if (listCards.isNotEmpty()) {
+        val currentFlashCard = listCards[currentQuestion]
+        LaunchedEffect(currentFlashCard) {
+            shuffledAnswers = currentFlashCard.listAnswer.shuffled()
+        }
+        LazyColumn(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .fillMaxSize()
+                .drawBehind {
+                    drawRoundRect(
+                        color = Color.Cyan,
+                        cornerRadius = CornerRadius(16.dp.toPx()),
                     )
-                    {
-                        Text(text = "$currentQuestion/$totalQuestion")
-                        Button(
-                            onClick = {
-                                currentQuestion += 1
-                            }) {
-                            Text(text = "Submit")
-                        }
+                }
+                .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            item {
+                Text(
+                    text = "Play flash cards",
+                    style = MaterialTheme.typography.headlineLarge,
+                    modifier = Modifier
+                        .padding(16.dp)
+                )
+            }
+            item {
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .drawBehind {
+                        drawRoundRect(
+                            color = Color.LightGray,
+                            cornerRadius = CornerRadius(10.dp.toPx())
+                        )
                     }
-//                }
-//            }
+                    .border(
+                        width = 1.dp,
+                        color = Color.Black,
+                        shape = RoundedCornerShape(10.dp)
+                    )
+                ) {
+                    Text(
+                        text = currentFlashCard.question,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    )
+                }
+            }
+            items(shuffledAnswers.size) { index ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(20.dp),
+                ) {
+                    RadioButton(
+                        selected = selectedAnswer == shuffledAnswers[index],
+                        onClick = { selectedAnswer = shuffledAnswers[index] },
+                        colors = RadioButtonDefaults.colors(
+                            selectedColor = MaterialTheme.colorScheme.primary,
+                            unselectedColor = Color.Gray
+                        )
+                    )
+                    Text(text = shuffledAnswers[index])
+                    Log.d("Flash card screen", "selected answer: $selectedAnswer, Correct answer is: ${currentFlashCard.correctAnswer}")
+                }
+            }
+            item {
+                Row(modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxHeight(),
+                    horizontalArrangement = Arrangement.spacedBy(20.dp),
+                    verticalAlignment = Alignment.CenterVertically.apply { Alignment.BottomEnd }
+                )
+                {
+                    Text(text = "${currentQuestion + 1}/$totalQuestion")
+                    Button(
+                        onClick = {
+                            if (selectedAnswer == "") {
+                                Log.d("PLAY_CARDS", "You need to choose 1 answer to submit")
+                                Toast.makeText(
+                                    context,
+                                    "You need to choose 1 correct answer to submit",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                if (currentQuestion < totalQuestion) {
+                                    currentQuestion += 1
+                                } else {
+                                    navController.navigate("SummaryResult")
+                                }
+                            }
+                            selectedAnswer = ""
+                        }) {
+                        Text(text = "Submit")
+                    }
+                }
+            }
         }
     } else {
-        Text(text = "You need to have cards to play", style = MaterialTheme.typography.headlineLarge,
-            modifier = Modifier.padding(16.dp).fillMaxWidth().fillMaxHeight())
+        Row(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .fillMaxSize()
+                .drawBehind {
+                    drawRoundRect(
+                        color = Color.Cyan,
+                        cornerRadius = CornerRadius(16.dp.toPx()),
+                    )
+                }
+                .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "You need to have at least 1 card to play",
+                style = MaterialTheme.typography.headlineLarge,
+                modifier = Modifier
+                    .padding(20.dp),
+//                    .fillMaxWidth()
+//                    .fillMaxHeight(),
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
