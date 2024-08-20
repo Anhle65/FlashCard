@@ -100,7 +100,8 @@ class MainActivity : ComponentActivity() {
                                 val createCardViewModel: CreateCardViewModel = viewModel()
                                 CreateFlashCardScreen(navController = navController, question = createCardViewModel.question,
                                     onQuestionChange = {newQuestion -> createCardViewModel.updateQuestion(newQuestion)},
-                                    listAnswer = createCardViewModel.listAns.toMutableList(),
+                                    createCardViewModel = createCardViewModel,
+                                    inputAnswers = createCardViewModel.listAns.toMutableList(),
                                     onListAnswerChange = {
                                             newListAnswer -> createCardViewModel.setAnswers(newListAnswer)},
                                     onCrrAnswerChange = {corrAns -> createCardViewModel.updateCorrectAnswer(corrAns)},
@@ -108,7 +109,7 @@ class MainActivity : ComponentActivity() {
                             }
                             composable("CardList") {
                                 val listCards: List<FlashCard> by cardViewModel.cards.collectAsState(emptyList())
-                                Log.d("CARD_LIST", "Number of question in storage is: ${listCards.size}")
+                                Log.d("MAIN_ACTIVITY", "Number of question in storage is: ${listCards.size}")
                                 FlashCardListScreen(navController, cardViewModel)
                             }
                             composable(
