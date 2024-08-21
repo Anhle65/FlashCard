@@ -16,15 +16,11 @@ class CreateCardViewModel: ViewModel() {
     }
 
     var listAns =  mutableListOf("","","","")
-//    var listAns by mutableStateOf(listOf("", "", "", "" ))
         private set
 
     fun setAnswers(newAnswers: MutableList<String>) {
         listAns.clear()
         listAns.addAll(newAnswers)
-    }
-    fun addOptionAnswer() {
-        listAns.add("")
     }
 
     fun updateAnswer(index: Int, newAnswer: String) {
