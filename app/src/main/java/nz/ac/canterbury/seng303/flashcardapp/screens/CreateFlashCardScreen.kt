@@ -132,8 +132,7 @@ fun CreateFlashCardScreen(navController: NavController,
                             Log.d("Card Screen", "Input list answers is $inputAnswers")
                             createCardViewModel.updateAnswer(index, answer)
                             Log.d("Card Screen", "Input list answers after call the update method is $inputAnswers")
-//                            onListAnswerChange(inputAnswers)
-                                        },
+                            onListAnswerChange(inputAnswers)},
                         label = { Text("Empty answer now") },
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
@@ -153,8 +152,6 @@ fun CreateFlashCardScreen(navController: NavController,
             Button(
                 onClick = {
                     inputAnswers.add("")
-//                    createCardViewModel.setAnswers((createCardViewModel.listAns + "").toMutableList())
-//                    createCardViewModel.setAnswers(listAnswer)
                     listAnswers = listAnswers.toMutableList().apply { add(mutableStateOf("")) }
                     checked = checked.toMutableList().apply { add(mutableStateOf(false)) }},
                 modifier = Modifier
