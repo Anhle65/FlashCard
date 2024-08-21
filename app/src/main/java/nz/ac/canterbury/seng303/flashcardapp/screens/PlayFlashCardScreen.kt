@@ -42,13 +42,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import nz.ac.canterbury.seng303.flashcardapp.models.FlashCard
 import nz.ac.canterbury.seng303.flashcardapp.viewmodels.FlashCardViewModel
+import java.util.Random
 
 @Composable
 fun PlayFlashCardScreen(navController: NavController, cardViewModel: FlashCardViewModel){
     cardViewModel.getCards()
     val listCards: List<FlashCard> by cardViewModel.cards.collectAsState(emptyList())
     val totalQuestion = listCards.size
-    var shuffledAnswers by remember { mutableStateOf(listOf<String>()) }
+//    var shuffledAnswers by remember { mutableStateOf(listOf<String>()) }
     var currentQuestion by rememberSaveable { mutableStateOf(0)}
     var selectedAnswer by rememberSaveable { mutableStateOf("")}
     val context = LocalContext.current
@@ -71,8 +72,9 @@ fun PlayFlashCardScreen(navController: NavController, cardViewModel: FlashCardVi
 //    ) {
     if (listCards.isNotEmpty()) {
         val currentFlashCard = listCards[currentQuestion]
-        LaunchedEffect(currentFlashCard) {
-            shuffledAnswers = currentFlashCard.listAnswer.shuffled()
+        val shuffledAnswers = rememberSaveable (currentFlashCard) {
+            currentFlashCard.listAnswer.shuffled()
+
         }
         LazyColumn(
             modifier = Modifier
@@ -163,6 +165,11 @@ fun PlayFlashCardScreen(navController: NavController, cardViewModel: FlashCardVi
                             } else {
                                 if (currentQuestion < totalQuestion-1) {
                                     currentQuestion += 1
+                                    if (selectedAnswer == currentFlashCard.correctAnswer) {
+                                        Log.e("CARD_SCREEN", "YOU ARE CORRECT")
+                                    } else {
+                                        Log.e("CARD_SCREEN", "YOU ARE WRONG")
+                                    }
                                 } else {
                                     navController.navigate("SummaryResult")
                                 }
