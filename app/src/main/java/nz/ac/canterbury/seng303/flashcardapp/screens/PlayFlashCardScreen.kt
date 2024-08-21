@@ -161,7 +161,7 @@ fun PlayFlashCardScreen(navController: NavController, cardViewModel: FlashCardVi
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else {
-                                if (currentQuestion < totalQuestion) {
+                                if (currentQuestion < totalQuestion-1) {
                                     currentQuestion += 1
                                 } else {
                                     navController.navigate("SummaryResult")
