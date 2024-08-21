@@ -112,27 +112,6 @@ fun FlashCardScreen(cardId: String, cardViewModel: FlashCardViewModel){
                     Log.d("Flash card screen", "selected answer: $selectedAnswer correct answer is ${card.correctAnswer}")
                 }
             }
-            item {
-                Row (modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxHeight()
-                    .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                )
-                {
-                    Text(text = "$currentQuestion/$totalQuestion")
-                    Button(
-                        onClick = {
-                            if (selectedAnswer == card.correctAnswer) {
-                                Log.d("CARD_SCREEN", "YOU ARE CORRECT")
-                            } else {
-                                Log.d("CARD_SCREEN", "YOU ARE WRONG")
-                            }
-                        }) {
-                        Text(text = "Submit")
-                    }
-                }
-            }
         }
     } else {
         Text(text = "Could not find card: $cardId", style = MaterialTheme.typography.headlineMedium)
