@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -22,6 +24,7 @@ import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -32,6 +35,8 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import nz.ac.canterbury.seng303.flashcardapp.models.FlashCard
@@ -50,12 +55,22 @@ fun FlashCardListScreen(navController: NavController, cardViewModel: FlashCardVi
             .drawBehind {
                 drawRoundRect(
                     color = Color.Cyan,
-                    cornerRadius = CornerRadius(15.dp.toPx()),
+                    cornerRadius = CornerRadius(16.dp.toPx()),
                 )
             }
-            .border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
-        Arrangement.spacedBy(20.dp)
+            .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
+        Arrangement.spacedBy(10.dp)
     ){
+        Text(text = "Flash Cards",
+            textAlign = TextAlign.Center,
+            style = TextStyle(
+                color = Color.Black,
+                fontSize = MaterialTheme.typography.headlineMedium.fontSize
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)
+        )
         LazyColumn {
             items(cards.size) { index ->
                 CardItem(navController = navController, card = cards[index],
@@ -74,6 +89,7 @@ fun CardItem(navController: NavController, card: FlashCard, deleteCardFn: (id: I
             .fillMaxSize()
             .fillMaxWidth()
             .padding(16.dp)
+            .clickable { navController.navigate("FlashCard/${card.id}") } //go into the flash card when click
             .drawBehind {
                 drawRoundRect(
                     color = Color.White,
@@ -89,38 +105,44 @@ fun CardItem(navController: NavController, card: FlashCard, deleteCardFn: (id: I
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
-                .clickable { navController.navigate("FlashCard/${card.id}") },
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(50.dp)
         ) {
             IconButton(
-                modifier = Modifier.drawBehind {
+                modifier = Modifier
+                    .size(50.dp)
+                    .drawBehind {
                     drawRoundRect(
                         color = Color.Blue,
                         cornerRadius = CornerRadius(25.dp.toPx()),
                     )
                 },
+                // When click on the search button, it goes to browser and search for the question on flash card
                 onClick = {
                     val searchQuery = "${card.question}"    //Extract the query that will be parsed to the search intent
                     val searchIntent = Intent(Intent.ACTION_WEB_SEARCH).apply {
-                        putExtra(SearchManager.QUERY, searchQuery)                    // Pass the string to search bar for searching
+                        putExtra(SearchManager.QUERY, searchQuery)  // Pass the string to search bar for searching
                     }
-                    context.startActivity(searchIntent)         // Launch the search activity
+                    context.startActivity(searchIntent)     // Launch the search activity
                     Log.d("LIST_CARD", "Click on search button and search for ${card.question}")
                 })
             {
                 Icon(
                     imageVector = Icons.Outlined.Search,
-                    contentDescription = "Edit",
-                    tint = Color.White
+                    contentDescription = "Search",
+                    tint = Color.White,
+                    modifier = Modifier
+                        .width(30.dp)
                 )
             }
             IconButton(
-                modifier = Modifier.drawBehind {
-                    drawRoundRect(
-                        color = Color.Blue,
-                        cornerRadius = CornerRadius(25.dp.toPx()),
+                modifier = Modifier
+                    .size(50.dp)
+                    .drawBehind {
+                        drawRoundRect(
+                            color = Color.Blue,
+                            cornerRadius = CornerRadius(25.dp.toPx()),
                     )
                 },
                 onClick = {
@@ -134,8 +156,10 @@ fun CardItem(navController: NavController, card: FlashCard, deleteCardFn: (id: I
                 )
             }
             IconButton(
-                modifier = Modifier.drawBehind {
-                    drawRoundRect(
+                modifier = Modifier
+                    .size(50.dp)
+                    .drawBehind {
+                        drawRoundRect(
                         color = Color.Blue,
                         cornerRadius = CornerRadius(25.dp.toPx()),
                     )

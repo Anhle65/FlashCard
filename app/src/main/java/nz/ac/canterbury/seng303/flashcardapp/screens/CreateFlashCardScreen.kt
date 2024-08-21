@@ -24,7 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -42,19 +41,21 @@ import nz.ac.canterbury.seng303.flashcardapp.viewmodels.CreateCardViewModel
 @Composable
 fun CreateFlashCardScreen(navController: NavController,
                           question: String,
+                          createCardViewModel: CreateCardViewModel,
                           onQuestionChange: (String) -> Unit,
-                          listAnswer: MutableList<String>,
+                          inputAnswers: MutableList<String>,
                           onListAnswerChange: (MutableList<String>) -> Unit,
                           onCrrAnswerChange: (String) -> Unit,
                           createCardFn: (String, MutableList<String>, String) -> Unit
 ) {
     val context = LocalContext.current
-    var crrAns = ""
+    var crrAns by rememberSaveable { mutableStateOf("")}
     var listAnswers by rememberSaveable { mutableStateOf(listOf(mutableStateOf(""), mutableStateOf(""), mutableStateOf(""), mutableStateOf("")))}
-    var checked by remember { mutableStateOf(listOf(mutableStateOf(false), mutableStateOf(false), mutableStateOf(false), mutableStateOf(false))) }
+    var checked by rememberSaveable { mutableStateOf(listOf(mutableStateOf(false), mutableStateOf(false), mutableStateOf(false), mutableStateOf(false))) }
     LazyColumn (
         modifier = Modifier
             .fillMaxSize()
+            .fillMaxWidth()
             .fillMaxHeight()
             .padding(16.dp)
 //            .verticalScroll(rememberScrollState())
@@ -96,9 +97,10 @@ fun CreateFlashCardScreen(navController: NavController,
                         )
                     }
             )
+            Log.d("Card Screen", "Question change to is $question")
         }
         items(listAnswers.size) { index ->
-            Log.d("Card Screen", "Answer ${listAnswers.size}, size of input list ${listAnswer.size}, each element is $listAnswer")
+            Log.d("Card Screen", "Answer ${listAnswers.size}, size of input list from createViewModel ${inputAnswers.size}, each element is ${inputAnswers}")
             Box(
                 modifier = Modifier
                     .fillMaxSize(),
@@ -124,8 +126,13 @@ fun CreateFlashCardScreen(navController: NavController,
                     Log.d("Card Screen", "Correct ans is $crrAns")
                     OutlinedTextField(
                         value = listAnswers[index].value,
-                        onValueChange = {listAnswers[index].value = it
-                                listAnswer[index] = it},
+                        onValueChange = { answer ->
+                            listAnswers[index].value = answer
+                            inputAnswers[index] = answer
+                            Log.d("Card Screen", "Input list answers is $inputAnswers")
+                            createCardViewModel.updateAnswer(index, answer)
+                            Log.d("Card Screen", "Input list answers after call the update method is $inputAnswers")
+                            onListAnswerChange(inputAnswers)},
                         label = { Text("Empty answer now") },
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
@@ -140,10 +147,11 @@ fun CreateFlashCardScreen(navController: NavController,
                 }
             }
         }
+//        Log.d("Card Screen", "Answer ${listAnswers.size}, size of input list from createViewModel ${listAnswer.size}, each element is $listAnswer")
         item {
             Button(
                 onClick = {
-                    listAnswer.add("")
+                    inputAnswers.add("")
                     listAnswers = listAnswers.toMutableList().apply { add(mutableStateOf("")) }
                     checked = checked.toMutableList().apply { add(mutableStateOf(false)) }},
                 modifier = Modifier
@@ -170,7 +178,7 @@ fun CreateFlashCardScreen(navController: NavController,
                             "Could not create a flash card without question",
                             Toast.LENGTH_SHORT
                         ).show()
-                    } else if (listAnswer.all { it.isEmpty() }) {
+                    } else if (inputAnswers.all { it.isEmpty() }) {
                         Toast.makeText(
                             context,
                             "Could not create a flash card without answers",
@@ -186,7 +194,7 @@ fun CreateFlashCardScreen(navController: NavController,
                     } else {
                         builder.setMessage("Created Card: $question")
                             .setPositiveButton("Ok") { dialog, id -> /* Run some code on click */
-                                createCardFn(question, listAnswer, crrAns)
+                                createCardFn(question, inputAnswers, crrAns)
                                 onQuestionChange("")
                                 onCrrAnswerChange("")
                                 onListAnswerChange(emptyList<String>().toMutableList())
