@@ -1,5 +1,6 @@
 package nz.ac.canterbury.seng303.flashcardapp.screens
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.util.Log
 import android.widget.Toast
@@ -19,6 +20,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,25 +41,15 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import nz.ac.canterbury.seng303.flashcardapp.models.FlashCard
 import nz.ac.canterbury.seng303.flashcardapp.viewmodels.EditCardViewModel
 import nz.ac.canterbury.seng303.flashcardapp.viewmodels.FlashCardViewModel
-
-
-@Composable
-fun <T: Any> rememberMutableStateListOf(vararg elements: T): SnapshotStateList<T> {
-    return rememberSaveable(saver = snapshotStateListSaver()) {
-        elements.toList().toMutableStateList()
-    }
-}
-
-private fun <T : Any> snapshotStateListSaver() = listSaver<SnapshotStateList<T>, T>(
-    save = { stateList -> stateList.toList() },
-    restore = { it.toMutableStateList() },
-)
-
+//
+//
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditFlashCard(
@@ -70,7 +62,8 @@ fun EditFlashCard(
     val selectedCardState by cardViewModel.selectedCard.collectAsState(null)
     val flashCard: FlashCard? =
         selectedCardState // we explicitly assign to card to help the compilers smart cast out
-
+    var crrAns = editCardViewModel.correctAns
+    var indexCorrectAnswer = editCardViewModel.correctAns.indexOf(crrAns)
     LaunchedEffect(flashCard) {  // Get the default values for the flash card properties
         if (flashCard == null) {
             cardViewModel.getCardById(cardId.toIntOrNull())
@@ -78,155 +71,188 @@ fun EditFlashCard(
             editCardViewModel.setDefaultValues(flashCard)
         }
     }
-//    var listAnswers = rememberSaveable { mutableStateOf(listOf(mutableStateOf(""), mutableStateOf(""), mutableStateOf(""), mutableStateOf("")))}
-//    var checked by remember { mutableStateOf(listOf(mutableStateOf(false), mutableStateOf(false), mutableStateOf(false), mutableStateOf(false))) }
-    var checked = rememberSaveable { mutableStateListOf<Boolean>() }
-    val listAnswers = rememberMutableStateListOf<String>()
-//    if (editCardViewModel.listAns[0] == editCardViewModel.correctAns) {
-//        checked.toMutableList()[0].setValue()
-//        checked = mutableStateOf(listOf(mutableStateOf(false)))
-//    }
-//    var checked by remember { mutableStateOf(listOf(mutableStateOf(false))) }
-    var crrAns = editCardViewModel.correctAns
-    for ( i in 0.. editCardViewModel.listAns.size - 1) {
-//        listAnswers.add(editCardViewModel.listAns[i])
-        listAnswers.add("")
-        if (editCardViewModel.listAns[i] != crrAns) {
-//            checked = checked.toMutableList().apply { add(mutableStateOf(false)) }
-            checked.add(false)
-        } else {
-            checked.add(true)
-        }
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .fillMaxHeight()
-                .padding(16.dp)
-                .drawBehind {
-                    drawRoundRect(
-                        color = Color.Cyan,
-                        cornerRadius = CornerRadius(16.dp.toPx()),
-                    )
-                }
-                .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
-//            .verticalScroll(true),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-//        item {
-//            Text(text = "Add a new flash card",
-//                textAlign = TextAlign.Center,
-//                style = TextStyle(
-//                    color = Color.Black,
-//                    fontSize = MaterialTheme.typography.headlineLarge.fontSize
-//                ),
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(10.dp)
+//    var checked by rememberSaveable {
+//        mutableStateOf(
+//            listOf(
+//                mutableStateOf(false),
+//                mutableStateOf(false),
+//                mutableStateOf(false),
+//                mutableStateOf(false)
 //            )
-//        }
-            item {
-                OutlinedTextField(
-                    value = editCardViewModel.question,
-                    onValueChange = { editCardViewModel.updateQuestion(it) },
-                    label = { Text("Input question here") },
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth()
-                        .drawBehind {
-                            drawRoundRect(
-                                color = Color.LightGray,
-                                cornerRadius = CornerRadius(16.dp.toPx()),
-                            )
-                        }
+//        )
+//    }
+
+    var checked by rememberSaveable {
+        mutableStateOf(
+            editCardViewModel.listAns.map { answer ->
+                mutableStateOf(answer == editCardViewModel.correctAns)
+            }
+        )
+    }
+//    var listAnswers by rememberSaveable {
+//        mutableStateOf(
+//            editCardViewModel.listAns.map { mutableStateOf(it) }
+//        )
+//    }
+    var listAnswers by rememberSaveable {
+        mutableStateOf(
+            listOf(
+                mutableStateOf(""),
+                mutableStateOf(""),
+                mutableStateOf(""),
+                mutableStateOf("")
+            )
+        )
+    }
+    checked[indexCorrectAnswer].value = true
+    while (listAnswers.size < editCardViewModel.listAns.size) {
+        listAnswers = listAnswers.toMutableList().apply { add(mutableStateOf(""))}
+        checked = checked.toMutableList().apply { add(mutableStateOf(false)) }
+    }
+    while (listAnswers.size > editCardViewModel.listAns.size) {
+        checked = checked.toMutableList().apply { removeLast() }
+        listAnswers = listAnswers.toMutableList().apply { removeLast() }
+    }
+    for(index in 0..editCardViewModel.listAns.size - 1 ) {
+        listAnswers[index].value = editCardViewModel.listAns[index]
+    }
+    Log.d("EDIT_SCREEN", "before change state List of check states ${checked.size} each states is: $checked")
+    Log.d("EDIT_SCREEN", "List of check states ${checked.size} each states is: $checked")
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .fillMaxHeight()
+            .padding(16.dp)
+            .drawBehind {
+                drawRoundRect(
+                    color = Color.Cyan,
+                    cornerRadius = CornerRadius(16.dp.toPx()),
                 )
             }
-            items(editCardViewModel.listAns.size) { index ->
-                Log.d(
-                    "Edit Card Screen",
-                    "Number answer of card ${editCardViewModel.listAns.size}, each element is ${editCardViewModel.listAns}"
-                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                    ) {
-                        Checkbox(
-                            checked = checked[index],
-                            onCheckedChange = {
-                                checked[index] = it
-                                if (checked[index] == false) {
-                                    crrAns = editCardViewModel.correctAns
-                                } else {
-                                    crrAns = editCardViewModel.listAns[index]
-                                    editCardViewModel.updateCorrectAnswer(crrAns)  //Update correct answer
-                                }
-                            }
+            .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        item {
+            Text(text = "Edit flash card",
+                textAlign = TextAlign.Center,
+                style = TextStyle(
+                    color = Color.Black,
+                    fontSize = MaterialTheme.typography.headlineLarge.fontSize
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+            )
+        }
+        item {
+            OutlinedTextField(
+                value = editCardViewModel.question,
+                onValueChange = { editCardViewModel.updateQuestion(it) },
+//                label = { Text("Input question here") },
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+                    .drawBehind {
+                        drawRoundRect(
+                            color = Color.LightGray,
+                            cornerRadius = CornerRadius(16.dp.toPx()),
                         )
-                        Log.d("Card Screen", "Correct ans is $crrAns")
-                        OutlinedTextField(
-                            value = listAnswers[index],
-                            onValueChange = {
-                                listAnswers[index] = it
-                                editCardViewModel.updateAnswer(index, it)
-                            },  // Change answer in specific index
-                            label = { Text(editCardViewModel.listAns[index]) },
-                            modifier = Modifier
-                                .padding(horizontal = 5.dp)
-                                .drawBehind {
-                                    drawRoundRect(
-                                        color = Color.LightGray,
-                                        cornerRadius = CornerRadius(16.dp.toPx()),
-                                    )
-                                }
-                        )
-                        Log.e("Edit screen", "changed value $listAnswers")
                     }
+            )
+        }
+        items(listAnswers.size) { index ->
+            Log.d(
+                "Edit Card Screen",
+                "Number answer of card ${editCardViewModel.listAns.size}, each element is ${editCardViewModel.listAns}\n" +
+                        "Number edited answer ${listAnswers.size}, each element is ${listAnswers}"
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                ) {
+                    Checkbox(
+                        checked = checked[index].value,
+                        onCheckedChange = {
+                            checked[index].value = it
+                            if (checked[index].value == false) {
+                                crrAns = editCardViewModel.correctAns
+                            } else {
+                                crrAns = editCardViewModel.listAns[index]
+                                  //Update correct answer
+                            }
+                            editCardViewModel.updateCorrectAnswer(crrAns)
+                        }
+                    )
+                    Log.d("Card Screen", "Correct ans is $crrAns")
+                    OutlinedTextField(
+                        value = listAnswers[index].value,
+                        onValueChange = {
+//                            editCardViewModel.listAns.toMutableList()[index] = it
+                            listAnswers[index].value = it
+                            Log.e("EDIT_SCREEN", "New value ${listAnswers[index].value}, in edit view model ${listAnswers[index].value}")
+                            editCardViewModel.updateAnswer(index, it)
+                        },
+//                        label = { Text(editCardViewModel.listAns[index]) },
+                        modifier = Modifier
+                            .padding(horizontal = 5.dp)
+                            .drawBehind {
+                                drawRoundRect(
+                                    color = Color.LightGray,
+                                    cornerRadius = CornerRadius(16.dp.toPx()),
+                                )
+                            }
+                    )
+                    Log.e("Edit screen", "changed value $listAnswers")
                 }
             }
-            item {
-                Button(
-                    onClick = {
+        }
+        item {
+            Button(
+                onClick = {
 //                    editCardViewModel.listAns.toMutableList().add("")
 
 //                    listAnswers = listAnswers.toMutableList().apply { add(mutableStateOf("")) }
 //                    checked = checked.toMutableList().apply { add(mutableStateOf(false)) }},
-                        listAnswers.add("")
-//                    checked.add(false)
-                    },
+                    editCardViewModel.addOptionAnswer()
+                    listAnswers = listAnswers.toMutableList().apply { add(mutableStateOf("")) }
+                    checked = checked.toMutableList().apply { add(mutableStateOf(false)) }
+                },
+                modifier = Modifier
+                    .padding(8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add",
+                    tint = Color.White,
                     modifier = Modifier
-                        .padding(8.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Add",
-                        tint = Color.White,
-                        modifier = Modifier
-                            .padding(4.dp)
-                    )
-                }
+                        .padding(4.dp)
+                )
             }
-            item {
-                Button(
-                    modifier = Modifier
-                        .padding(8.dp),
-                    onClick = {
-                        cardViewModel.editFlashCardById(
-                            cardId.toIntOrNull(),
-                            card = FlashCard(
-                                cardId.toInt(),
-                                editCardViewModel.question,
-                                editCardViewModel.listAns.toMutableList(),
-                                editCardViewModel.correctAns
-                            )
+        }
+        item {
+            Button(
+                modifier = Modifier
+                    .padding(8.dp),
+                onClick = {
+                    cardViewModel.editFlashCardById(
+                        cardId.toIntOrNull(),
+                        card = FlashCard(
+                            cardId.toInt(),
+                            editCardViewModel.question,
+                            listAnswers.map { it.value }.toMutableList(),
+                            editCardViewModel.correctAns
                         )
-                        val builder = AlertDialog.Builder(context)
+                    )
+                    val builder = AlertDialog.Builder(context)
 //                    if (question == "") {
 //                        Toast.makeText(
 //                            context,
@@ -257,13 +283,16 @@ fun EditFlashCard(
 //                            }.setNegativeButton("Cancel") { dialog, id ->
 //                                dialog.dismiss()
 //                            }
-                        builder.setMessage("Edited flash card!")
-                            .setPositiveButton("Ok") { dialog, id ->
+                    builder.setMessage("Edited flash card!")
+                        .setPositiveButton("Ok") { dialog, id ->
 //                            editCardViewModel.setAnswers(listAnswers)
-                                navController.navigate("CardList")
-                            }
-                        val alert = builder.create()
-                        alert.show()
+                            navController.navigate("CardList")
+                        }
+                        .setNegativeButton("Cancel") { dialog, id ->
+                            dialog.dismiss()
+                        }
+                    val alert = builder.create()
+                    alert.show()
 //                    }
                     },
                 ) {
@@ -271,5 +300,4 @@ fun EditFlashCard(
                 }
             }
         }
-    }
     }

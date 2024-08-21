@@ -44,6 +44,7 @@ import nz.ac.canterbury.seng303.flashcardapp.screens.EditFlashCard
 import nz.ac.canterbury.seng303.flashcardapp.screens.FlashCardListScreen
 import nz.ac.canterbury.seng303.flashcardapp.screens.FlashCardScreen
 import nz.ac.canterbury.seng303.flashcardapp.screens.PlayFlashCardScreen
+import nz.ac.canterbury.seng303.flashcardapp.screens.SummaryScreen
 import nz.ac.canterbury.seng303.flashcardapp.ui.theme.FlashcardappTheme
 import nz.ac.canterbury.seng303.flashcardapp.viewmodels.CreateCardViewModel
 import nz.ac.canterbury.seng303.flashcardapp.viewmodels.EditCardViewModel
@@ -127,6 +128,9 @@ class MainActivity : ComponentActivity() {
                                         cardViewModel = cardViewModel
                                     )
                                 }
+                            }
+                            composable("SummaryResult") {
+                                SummaryScreen(navController)
                             }
                         }
                     }
