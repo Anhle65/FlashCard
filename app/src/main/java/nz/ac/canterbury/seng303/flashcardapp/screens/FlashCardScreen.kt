@@ -51,7 +51,7 @@ fun FlashCardScreen(cardId: String, cardViewModel: FlashCardViewModel){
     val selectedCardState by cardViewModel.selectedCard.collectAsState(null)
     val card: FlashCard? = selectedCardState
     if (card != null) {
-        val listAnswers by rememberSaveable { mutableStateOf(card.listAnswer) }
+        val listAnswers by rememberSaveable { mutableStateOf(card.listAnswer.filter { it != "" }) }
         val (selectedAnswer, onOptionSelected) = rememberSaveable { mutableStateOf("") }
         LazyColumn(
             modifier = Modifier
