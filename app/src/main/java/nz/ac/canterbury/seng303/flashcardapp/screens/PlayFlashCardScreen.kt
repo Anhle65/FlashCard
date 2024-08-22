@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,32 +50,17 @@ fun PlayFlashCardScreen(navController: NavController, cardViewModel: FlashCardVi
     cardViewModel.getCards()
     val listCards: List<FlashCard> by cardViewModel.cards.collectAsState(emptyList())
     val totalQuestion = listCards.size
-//    var shuffledAnswers by remember { mutableStateOf(listOf<String>()) }
-    var currentQuestion by rememberSaveable { mutableStateOf(0)}
+    var currentQuestion by rememberSaveable { mutableIntStateOf(0) }
     var selectedAnswer by rememberSaveable { mutableStateOf("")}
     val context = LocalContext.current
 
-
-//    cardViewModel.getCardById(cardId = cardId.toIntOrNull())
-//    val selectedCardState by cardViewModel.selectedCard.collectAsState(null)
-//    val card: FlashCard? = selectedCardState
-//    Column (modifier = Modifier
-//        .padding(16.dp)
-//        .fillMaxWidth()
-//        .fillMaxHeight()
-//        .drawBehind {
-//            drawRoundRect(
-//                color = Color.Cyan,
-//                cornerRadius = CornerRadius(16.dp.toPx()),
-//            )
-//        }
-//        .border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(16.dp))
-//    ) {
     if (listCards.isNotEmpty()) {
-        val currentFlashCard = listCards[currentQuestion]
+        val shuffledCards = rememberSaveable (listCards) {
+            listCards.shuffled()
+        }
+        val currentFlashCard = shuffledCards[currentQuestion]
         val shuffledAnswers = rememberSaveable (currentFlashCard) {
-            currentFlashCard.listAnswer.shuffled()
-
+            currentFlashCard.listAnswer.filter { it!= "" }.shuffled()
         }
         LazyColumn(
             modifier = Modifier
@@ -203,8 +189,6 @@ fun PlayFlashCardScreen(navController: NavController, cardViewModel: FlashCardVi
                 style = MaterialTheme.typography.headlineLarge,
                 modifier = Modifier
                     .padding(20.dp),
-//                    .fillMaxWidth()
-//                    .fillMaxHeight(),
                 textAlign = TextAlign.Center
             )
         }
