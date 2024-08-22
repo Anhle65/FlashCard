@@ -166,7 +166,7 @@ fun EditFlashCard(
                     .drawBehind {
                         drawRoundRect(
                             color = Color.LightGray,
-                            cornerRadius = CornerRadius(16.dp.toPx()),
+                            cornerRadius = CornerRadius(8.dp.toPx()),
                         )
                     }
             )
@@ -222,7 +222,7 @@ fun EditFlashCard(
                             .drawBehind {
                                 drawRoundRect(
                                     color = Color.LightGray,
-                                    cornerRadius = CornerRadius(16.dp.toPx()),
+                                    cornerRadius = CornerRadius(8.dp.toPx()),
                                 )
                             }
                     )
