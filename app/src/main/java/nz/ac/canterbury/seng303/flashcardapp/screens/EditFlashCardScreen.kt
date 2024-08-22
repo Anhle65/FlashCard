@@ -62,38 +62,7 @@ fun EditFlashCard(
     val selectedCardState by cardViewModel.selectedCard.collectAsState(null)
     val flashCard: FlashCard? =
         selectedCardState // we explicitly assign to card to help the compilers smart cast out
-    var crrAns = editCardViewModel.correctAns
-    var indexCorrectAnswer = editCardViewModel.correctAns.indexOf(crrAns)
-    LaunchedEffect(flashCard) {  // Get the default values for the flash card properties
-        if (flashCard == null) {
-            cardViewModel.getCardById(cardId.toIntOrNull())
-        } else {
-            editCardViewModel.setDefaultValues(flashCard)
-        }
-    }
-//    var checked by rememberSaveable {
-//        mutableStateOf(
-//            listOf(
-//                mutableStateOf(false),
-//                mutableStateOf(false),
-//                mutableStateOf(false),
-//                mutableStateOf(false)
-//            )
-//        )
-//    }
-
-    var checked by rememberSaveable {
-        mutableStateOf(
-            editCardViewModel.listAns.map { answer ->
-                mutableStateOf(answer == editCardViewModel.correctAns)
-            }
-        )
-    }
-//    var listAnswers by rememberSaveable {
-//        mutableStateOf(
-//            editCardViewModel.listAns.map { mutableStateOf(it) }
-//        )
-//    }
+//    var crrAns = editCardViewModel.correctAns
     var listAnswers by rememberSaveable {
         mutableStateOf(
             listOf(
@@ -104,20 +73,59 @@ fun EditFlashCard(
             )
         )
     }
-    checked[indexCorrectAnswer].value = true
-    while (listAnswers.size < editCardViewModel.listAns.size) {
-        listAnswers = listAnswers.toMutableList().apply { add(mutableStateOf(""))}
-        checked = checked.toMutableList().apply { add(mutableStateOf(false)) }
+
+    var checked by rememberSaveable {
+        mutableStateOf(
+            listOf(
+                mutableStateOf(false),
+                mutableStateOf(false),
+                mutableStateOf(false),
+                mutableStateOf(false)
+            )
+        )
     }
-    while (listAnswers.size > editCardViewModel.listAns.size) {
-        checked = checked.toMutableList().apply { removeLast() }
-        listAnswers = listAnswers.toMutableList().apply { removeLast() }
+    LaunchedEffect(flashCard) {  // Get the default values for the flash card properties
+        if (flashCard == null) {
+            cardViewModel.getCardById(cardId.toIntOrNull())
+        } else {
+            editCardViewModel.setDefaultValues(flashCard)
+            while (listAnswers.size < editCardViewModel.listAns.size) {
+                listAnswers = listAnswers.toMutableList().apply { add(mutableStateOf(""))}
+                checked = checked.toMutableList().apply { add(mutableStateOf(false)) }
+            }
+            while (listAnswers.size > editCardViewModel.listAns.size) {
+                checked = checked.toMutableList().apply { removeLast() }
+                listAnswers = listAnswers.toMutableList().apply { removeLast() }
+            }
+            for(index in 0..editCardViewModel.listAns.size - 1 ) {
+                listAnswers[index].value = editCardViewModel.listAns[index]
+                if (listAnswers[index].value == editCardViewModel.correctAns) {
+                    checked[index].value = true
+                } else {
+                    checked[index].value = false
+                }
+            }
+        }
     }
-    for(index in 0..editCardViewModel.listAns.size - 1 ) {
-        listAnswers[index].value = editCardViewModel.listAns[index]
-    }
-    Log.d("EDIT_SCREEN", "before change state List of check states ${checked.size} each states is: $checked")
-    Log.d("EDIT_SCREEN", "List of check states ${checked.size} each states is: $checked")
+
+
+//    var checked by rememberSaveable {
+//        mutableStateOf(
+//            editCardViewModel.listAns.map { answer ->
+//                mutableStateOf(answer == editCardViewModel.correctAns)
+//            }
+//        )
+//    }
+//    var listAnswers by rememberSaveable {
+//        mutableStateOf(
+//            editCardViewModel.listAns.map { mutableStateOf(it) }
+//        )
+//    }
+
+//    checked[indexCorrectAnswer].value = true
+
+//    Log.d("EDIT_SCREEN", "before change state List of check states ${checked.size} each states is: $checked")
+//    Log.d("EDIT_SCREEN", "List of check states ${checked.size} each states is: $checked")
 
     LazyColumn(
         modifier = Modifier
@@ -149,7 +157,8 @@ fun EditFlashCard(
         item {
             OutlinedTextField(
                 value = editCardViewModel.question,
-                onValueChange = { editCardViewModel.updateQuestion(it) },
+//                onValueChange = { editCardViewModel.updateQuestion(it) },
+                onValueChange = {},
 //                label = { Text("Input question here") },
                 modifier = Modifier
                     .padding(16.dp)
@@ -179,20 +188,26 @@ fun EditFlashCard(
                         .fillMaxWidth()
                         .padding(8.dp),
                 ) {
+//                    var indexCorrectAnswer = rememberSaveable {
+//                        editCardViewModel.correctAns.indexOf(crrAns)
+//                    }
+//                    checked[indexCorrectAnswer].value = true
                     Checkbox(
                         checked = checked[index].value,
                         onCheckedChange = {
                             checked[index].value = it
-                            if (checked[index].value == false) {
-                                crrAns = editCardViewModel.correctAns
+                            if (checked[index].value == true) {
+//                                crrAns = listAnswers[index].value
+                                editCardViewModel.updateCorrectAnswer(listAnswers[index].value)
+//                            }
                             } else {
-                                crrAns = editCardViewModel.listAns[index]
-                                  //Update correct answer
+                                if(checked.all { it.value == false }) {
+                                    editCardViewModel.updateCorrectAnswer("")
+                                }
                             }
-                            editCardViewModel.updateCorrectAnswer(crrAns)
                         }
                     )
-                    Log.d("Card Screen", "Correct ans is $crrAns")
+                    Log.d("Card Screen", "Correct ans is ${editCardViewModel.correctAns}")
                     OutlinedTextField(
                         value = listAnswers[index].value,
                         onValueChange = {
@@ -248,7 +263,7 @@ fun EditFlashCard(
                         card = FlashCard(
                             cardId.toInt(),
                             editCardViewModel.question,
-                            listAnswers.map { it.value }.toMutableList(),
+                            listAnswers.filter { it.value != "" }.map { it.value }.toMutableList(),
                             editCardViewModel.correctAns
                         )
                     )
@@ -266,14 +281,23 @@ fun EditFlashCard(
 //                            Toast.LENGTH_SHORT
 //                        ).show()
 //
-//                    } else if (crrAns == "") {
-//                        Toast.makeText(
-//                            context,
-//                            "You need to choose 1 correct answer",
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                    } else {
-//                        builder.setMessage("Created Card: $question")
+//                    if (checked.all { false }) {
+////                        crrAns = ""
+//                        editCardViewModel.updateCorrectAnswer("")
+//                    }
+                    if (editCardViewModel.correctAns == "") {
+                        Toast.makeText(
+                            context,
+                            "You need to choose 1 correct answer",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else if (editCardViewModel.listAns.size < 2) {
+                        Toast.makeText(
+                            context,
+                            "You need to have at least 2 answers",
+                            Toast.LENGTH_SHORT
+                        ).show()
+//                        builder.setMessage("Edit Card: ${flashCard.question}")
 //                            .setPositiveButton("Ok") { dialog, id -> /* Run some code on click */
 //                                createCardFn(question, listAnswer, crrAns)
 //                                onQuestionChange("")
@@ -282,19 +306,21 @@ fun EditFlashCard(
 //                                navController.navigate("cardList")
 //                            }.setNegativeButton("Cancel") { dialog, id ->
 //                                dialog.dismiss()
-//                            }
-                    builder.setMessage("Edited flash card!")
-                        .setPositiveButton("Ok") { dialog, id ->
-//                            editCardViewModel.setAnswers(listAnswers)
-                            navController.navigate("CardList")
-                        }
-                        .setNegativeButton("Cancel") { dialog, id ->
-                            dialog.dismiss()
-                        }
-                    val alert = builder.create()
-                    alert.show()
 //                    }
-                    },
+//                    builder.setMessage("Edited flash card!")
+//                        .setPositiveButton("Ok") { dialog, id ->
+////                            editCardViewModel.setAnswers(listAnswers)
+//                            navController.navigate("CardList")
+//                        }
+//                        .setNegativeButton("Cancel") { dialog, id ->
+//                            dialog.dismiss()
+//                        }
+                    } else {
+                        navController.navigate("cardList")
+                    }
+//                    val alert = builder.create()
+//                    alert.show()
+                    }
                 ) {
                     Text(text = "Save and return")
                 }
