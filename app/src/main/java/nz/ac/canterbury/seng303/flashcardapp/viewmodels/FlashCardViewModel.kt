@@ -1,6 +1,10 @@
 package nz.ac.canterbury.seng303.flashcardapp.viewmodels
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,6 +22,20 @@ class FlashCardViewModel(private val cardStorage: Storage<FlashCard>): ViewModel
     val cards: StateFlow<List<FlashCard>> get() = _cards
     private val _selectedCard = MutableStateFlow<FlashCard?>(null)
     val selectedCard: StateFlow<FlashCard?> = _selectedCard
+    var playerName by mutableStateOf("")
+        private set
+
+    fun setName(name: String) {
+        playerName = name
+    }
+
+    var counterCorrect by mutableIntStateOf(0)
+        private set
+
+    fun incrementCorrectCounter() {
+        counterCorrect += 1
+    }
+
     fun getCardById(cardId: Int?) = viewModelScope.launch {
         if (cardId != null) {
             _selectedCard.value = cardStorage.get { it.getIdentifier() == cardId }.first()

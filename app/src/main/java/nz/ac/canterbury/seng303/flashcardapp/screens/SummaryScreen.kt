@@ -18,9 +18,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import nz.ac.canterbury.seng303.flashcardapp.viewmodels.FlashCardViewModel
 
 @Composable
-fun SummaryScreen (navController: NavController) {
+fun SummaryScreen (navController: NavController, cardViewModel: FlashCardViewModel) {
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -35,7 +36,7 @@ fun SummaryScreen (navController: NavController) {
             }
             .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),){
     }
-        Text(text = "Summary Results",
+        Text(text = "${cardViewModel.playerName}'s summary results",
             textAlign = TextAlign.Center,
             style = TextStyle(
                 color = Color.Black,
@@ -43,6 +44,7 @@ fun SummaryScreen (navController: NavController) {
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(20.dp)
         )
+
 }
