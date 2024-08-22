@@ -130,7 +130,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                             composable("SummaryResult") {
-                                SummaryScreen(navController)
+                                SummaryScreen(navController, cardViewModel)
                             }
                         }
                     }
