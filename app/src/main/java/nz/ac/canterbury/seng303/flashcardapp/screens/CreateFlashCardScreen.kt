@@ -178,10 +178,10 @@ fun CreateFlashCardScreen(navController: NavController,
                             "Could not create a flash card without question",
                             Toast.LENGTH_SHORT
                         ).show()
-                    } else if (inputAnswers.all { it.isEmpty() }) {
+                    } else if (inputAnswers.filter { it != "" }.map { it }.size < 2) {
                         Toast.makeText(
                             context,
-                            "Could not create a flash card without answers",
+                            "A flash card needs at least 2 answers",
                             Toast.LENGTH_SHORT
                         ).show()
 
