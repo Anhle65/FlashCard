@@ -149,14 +149,19 @@ fun PlayFlashCardScreen(navController: NavController, cardViewModel: FlashCardVi
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else {
-                                if (currentQuestion < totalQuestion-1) {
-                                    currentQuestion += 1
-                                    if (selectedAnswer == currentFlashCard.correctAnswer) {
-                                        Log.e("CARD_SCREEN", "YOU ARE CORRECT")
-                                    } else {
-                                        Log.e("CARD_SCREEN", "YOU ARE WRONG")
-                                    }
+                                if (selectedAnswer == currentFlashCard.correctAnswer) {
+                                    cardViewModel.incrementCorrectCounter()
+                                    Log.e("CARD_SCREEN", "YOU ARE CORRECT")
                                 } else {
+                                    Log.e("CARD_SCREEN", "YOU ARE WRONG")
+                                }
+                                if (currentQuestion < totalQuestion - 1)
+                                    currentQuestion += 1
+                                else {
+                                    Log.e(
+                                        "CARD_SCREEN",
+                                        "You have ${cardViewModel.counterCorrect} correct card in total"
+                                    )
                                     navController.navigate("SummaryResult")
                                 }
                             }
