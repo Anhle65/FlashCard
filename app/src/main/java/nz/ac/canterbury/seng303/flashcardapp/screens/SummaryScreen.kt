@@ -1,6 +1,7 @@
 package nz.ac.canterbury.seng303.flashcardapp.screens
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -125,5 +127,13 @@ fun SummaryScreen (navController: NavController, cardViewModel: FlashCardViewMod
                 }
             }
         }
+        item {
+            Button(
+                onClick = { navController.navigate("Home") }
+            ){
+                Text(text = "Play again")
+            }
+        }
+
     }
 }
