@@ -155,8 +155,18 @@ fun PlayFlashCardScreen(navController: NavController, cardViewModel: FlashCardVi
                                     cardViewModel.addResultCard(currentFlashCard, true)
                                     Log.e("CARD_SCREEN", "${cardViewModel.results.size}")
                                     Log.e("CARD_SCREEN", "YOU ARE CORRECT")
+                                    Toast.makeText(
+                                        context,
+                                        "Your answer is correct",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 } else {
                                     Log.e("CARD_SCREEN", "YOU ARE WRONG")
+                                    Toast.makeText(
+                                        context,
+                                        "Your answer is incorrect",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                     cardViewModel.addResultCard(currentFlashCard, false)
                                 }
                                 if (currentQuestion < cardViewModel.totalQuestion - 1)
