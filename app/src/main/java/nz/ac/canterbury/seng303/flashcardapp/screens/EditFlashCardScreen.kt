@@ -97,16 +97,26 @@ fun EditFlashCard(
                     checked = checked.toMutableList().apply { removeLast() }
                     listAnswers = listAnswers.toMutableList().apply { removeLast() }
                 }
-                for (index in 0..editCardViewModel.listAns.size - 1) {
-                    listAnswers[index].value = editCardViewModel.listAns[index]
-                    if (listAnswers[index].value == editCardViewModel.correctAns) {
-                        checked[index].value = true
-                    } else {
-                        checked[index].value = false
-                    }
-                }
+//                for (index in 0..editCardViewModel.listAns.size - 1) {
+//                    listAnswers[index].value = editCardViewModel.listAns[index]
+//                    if (listAnswers[index].value == editCardViewModel.correctAns) {
+//                        checked[index].value = true
+//                    } else {
+//                        checked[index].value = false
+//                    }
+//                }
                 isInitialized = true
             }
+//            Log.e("EDIT_CARD", "New crrAnswe: ${editCardViewModel.correctAns}")
+//            for (index in 0..editCardViewModel.listAns.size - 1) {
+//                listAnswers[index].value = editCardViewModel.listAns[index]
+//                if (listAnswers[index].value == editCardViewModel.correctAns) {
+//                    checked[index].value = true
+//                } else {
+//                    checked[index].value = false
+//                }
+//                Log.e("EDIT_CARD", "New crrAnswe: ${editCardViewModel.correctAns}, the checkbox state in that index is ${checked[index]}")
+//            }
         }
     }
 
@@ -145,6 +155,14 @@ fun EditFlashCard(
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        for (index in 0..editCardViewModel.listAns.size - 1) {
+            listAnswers[index].value = editCardViewModel.listAns[index]
+            if (listAnswers[index].value == editCardViewModel.correctAns) {
+                checked[index].value = true
+            } else {
+                checked[index].value = false
+            }
+        }
         item {
             Text(text = "Edit flash card",
                 textAlign = TextAlign.Center,
@@ -192,18 +210,12 @@ fun EditFlashCard(
                         .fillMaxWidth()
                         .padding(8.dp),
                 ) {
-//                    var indexCorrectAnswer = rememberSaveable {
-//                        editCardViewModel.correctAns.indexOf(crrAns)
-//                    }
-//                    checked[indexCorrectAnswer].value = true
                     Checkbox(
                         checked = checked[index].value,
                         onCheckedChange = {
                             checked[index].value = it
                             if (checked[index].value) {
-//                                crrAns = listAnswers[index].value
                                 editCardViewModel.updateCorrectAnswer(listAnswers[index].value)
-//                            }
                             } else {
                                 if(checked.all { !it.value }) {
                                     editCardViewModel.updateCorrectAnswer("")
@@ -215,12 +227,10 @@ fun EditFlashCard(
                     OutlinedTextField(
                         value = listAnswers[index].value,
                         onValueChange = {
-//                            editCardViewModel.listAns.toMutableList()[index] = it
                             listAnswers[index].value = it
                             Log.e("EDIT_SCREEN", "New value ${listAnswers[index].value}, in edit view model ${listAnswers[index].value}")
                             editCardViewModel.updateAnswer(index, it)
                         },
-//                        label = { Text(editCardViewModel.listAns[index]) },
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
                             .fillMaxWidth()
@@ -238,10 +248,6 @@ fun EditFlashCard(
         item {
             Button(
                 onClick = {
-//                    editCardViewModel.listAns.toMutableList().add("")
-
-//                    listAnswers = listAnswers.toMutableList().apply { add(mutableStateOf("")) }
-//                    checked = checked.toMutableList().apply { add(mutableStateOf(false)) }},
                     editCardViewModel.addOptionAnswer()
                     listAnswers = listAnswers.toMutableList().apply { add(mutableStateOf("")) }
                     checked = checked.toMutableList().apply { add(mutableStateOf(false)) }
@@ -296,7 +302,7 @@ fun EditFlashCard(
                             "You need to choose 1 correct answer",
                             Toast.LENGTH_SHORT
                         ).show()
-                    } else if (editCardViewModel.listAns.size < 2) {
+                    } else if (editCardViewModel.listAns.filter { it != "" }.size < 2) {
                         Toast.makeText(
                             context,
                             "You need to have at least 2 answers",
