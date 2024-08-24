@@ -62,7 +62,6 @@ fun EditFlashCard(
     val selectedCardState by cardViewModel.selectedCard.collectAsState(null)
     val flashCard: FlashCard? =
         selectedCardState // we explicitly assign to card to help the compilers smart cast out
-//    var crrAns = editCardViewModel.correctAns
     var listAnswers by rememberSaveable {
         mutableStateOf(
             listOf(
@@ -73,7 +72,7 @@ fun EditFlashCard(
             )
         )
     }
-
+    var isInitialized by rememberSaveable { mutableStateOf(false)}
     var checked by rememberSaveable {
         mutableStateOf(
             listOf(
@@ -88,22 +87,25 @@ fun EditFlashCard(
         if (flashCard == null) {
             cardViewModel.getCardById(cardId.toIntOrNull())
         } else {
-            editCardViewModel.setDefaultValues(flashCard)
-            while (listAnswers.size < editCardViewModel.listAns.size) {
-                listAnswers = listAnswers.toMutableList().apply { add(mutableStateOf(""))}
-                checked = checked.toMutableList().apply { add(mutableStateOf(false)) }
-            }
-            while (listAnswers.size > editCardViewModel.listAns.size) {
-                checked = checked.toMutableList().apply { removeLast() }
-                listAnswers = listAnswers.toMutableList().apply { removeLast() }
-            }
-            for(index in 0..editCardViewModel.listAns.size - 1 ) {
-                listAnswers[index].value = editCardViewModel.listAns[index]
-                if (listAnswers[index].value == editCardViewModel.correctAns) {
-                    checked[index].value = true
-                } else {
-                    checked[index].value = false
+            if(!isInitialized) {
+                editCardViewModel.setDefaultValues(flashCard)
+                while (listAnswers.size < editCardViewModel.listAns.size) {
+                    listAnswers = listAnswers.toMutableList().apply { add(mutableStateOf("")) }
+                    checked = checked.toMutableList().apply { add(mutableStateOf(false)) }
                 }
+                while (listAnswers.size > editCardViewModel.listAns.size) {
+                    checked = checked.toMutableList().apply { removeLast() }
+                    listAnswers = listAnswers.toMutableList().apply { removeLast() }
+                }
+                for (index in 0..editCardViewModel.listAns.size - 1) {
+                    listAnswers[index].value = editCardViewModel.listAns[index]
+                    if (listAnswers[index].value == editCardViewModel.correctAns) {
+                        checked[index].value = true
+                    } else {
+                        checked[index].value = false
+                    }
+                }
+                isInitialized = true
             }
         }
     }
@@ -131,6 +133,7 @@ fun EditFlashCard(
         modifier = Modifier
             .fillMaxSize()
             .fillMaxHeight()
+            .fillMaxWidth()
             .padding(16.dp)
             .drawBehind {
                 drawRoundRect(
@@ -179,7 +182,8 @@ fun EditFlashCard(
             )
             Box(
                 modifier = Modifier
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
                 Row(
@@ -196,12 +200,12 @@ fun EditFlashCard(
                         checked = checked[index].value,
                         onCheckedChange = {
                             checked[index].value = it
-                            if (checked[index].value == true) {
+                            if (checked[index].value) {
 //                                crrAns = listAnswers[index].value
                                 editCardViewModel.updateCorrectAnswer(listAnswers[index].value)
 //                            }
                             } else {
-                                if(checked.all { it.value == false }) {
+                                if(checked.all { !it.value }) {
                                     editCardViewModel.updateCorrectAnswer("")
                                 }
                             }
@@ -219,6 +223,7 @@ fun EditFlashCard(
 //                        label = { Text(editCardViewModel.listAns[index]) },
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
+                            .fillMaxWidth()
                             .drawBehind {
                                 drawRoundRect(
                                     color = Color.LightGray,
