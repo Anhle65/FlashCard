@@ -49,7 +49,7 @@ import java.util.Random
 fun PlayFlashCardScreen(navController: NavController, cardViewModel: FlashCardViewModel){
     cardViewModel.getCards()
     val listCards: List<FlashCard> by cardViewModel.cards.collectAsState(emptyList())
-    val totalQuestion = listCards.size
+    cardViewModel.setTotalQuestion(listCards.size)
     var currentQuestion by rememberSaveable { mutableIntStateOf(0) }
     var selectedAnswer by rememberSaveable { mutableStateOf("")}
     val context = LocalContext.current
@@ -75,7 +75,8 @@ fun PlayFlashCardScreen(navController: NavController, cardViewModel: FlashCardVi
                     )
                 }
                 .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+//            verticalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
@@ -138,7 +139,7 @@ fun PlayFlashCardScreen(navController: NavController, cardViewModel: FlashCardVi
                     verticalAlignment = Alignment.CenterVertically.apply { Alignment.BottomEnd }
                 )
                 {
-                    Text(text = "${currentQuestion + 1}/$totalQuestion")
+                    Text(text = "${currentQuestion + 1}/${cardViewModel.totalQuestion}")
                     Button(
                         onClick = {
                             if (selectedAnswer == "") {
@@ -151,11 +152,14 @@ fun PlayFlashCardScreen(navController: NavController, cardViewModel: FlashCardVi
                             } else {
                                 if (selectedAnswer == currentFlashCard.correctAnswer) {
                                     cardViewModel.incrementCorrectCounter()
+                                    cardViewModel.addResultCard(currentFlashCard, true)
+                                    Log.e("CARD_SCREEN", "${cardViewModel.results.size}")
                                     Log.e("CARD_SCREEN", "YOU ARE CORRECT")
                                 } else {
                                     Log.e("CARD_SCREEN", "YOU ARE WRONG")
+                                    cardViewModel.addResultCard(currentFlashCard, false)
                                 }
-                                if (currentQuestion < totalQuestion - 1)
+                                if (currentQuestion < cardViewModel.totalQuestion - 1)
                                     currentQuestion += 1
                                 else {
                                     Log.e(
