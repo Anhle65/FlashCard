@@ -65,7 +65,7 @@ fun CreateFlashCardScreen(navController: NavController,
                     cornerRadius = CornerRadius(16.dp.toPx()),
                 )
             }
-            .border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
+            .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
 //            .verticalScroll(true),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -198,7 +198,7 @@ fun CreateFlashCardScreen(navController: NavController,
                                 onQuestionChange("")
                                 onCrrAnswerChange("")
                                 onListAnswerChange(emptyList<String>().toMutableList())
-                                navController.navigate("cardList")
+                                navController.navigate("Home")
                             }.setNegativeButton("Cancel") { dialog, id ->
                                 dialog.dismiss()
                             }
