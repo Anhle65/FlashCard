@@ -22,6 +22,22 @@ class FlashCardViewModel(private val cardStorage: Storage<FlashCard>): ViewModel
     val cards: StateFlow<List<FlashCard>> get() = _cards
     private val _selectedCard = MutableStateFlow<FlashCard?>(null)
     val selectedCard: StateFlow<FlashCard?> = _selectedCard
+    var results = mutableMapOf<FlashCard, Boolean>()
+        private set
+
+    fun addResultCard(flashCard: FlashCard, isCorrect: Boolean) {
+        results[flashCard] = isCorrect
+        Log.d("VIEW_MODEL", "${flashCard.question}, is correct $isCorrect")
+    }
+    var totalQuestion = 0
+        private set
+
+    fun setTotalQuestion(total: Int) {
+        totalQuestion = total
+    }
+    fun resetResult(){
+        results.clear()
+    }
     var playerName by mutableStateOf("")
         private set
 
