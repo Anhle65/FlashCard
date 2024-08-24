@@ -32,6 +32,9 @@ class FlashCardViewModel(private val cardStorage: Storage<FlashCard>): ViewModel
     var counterCorrect by mutableIntStateOf(0)
         private set
 
+    fun resetCounter() {
+        counterCorrect = 0
+    }
     fun incrementCorrectCounter() {
         counterCorrect += 1
     }
