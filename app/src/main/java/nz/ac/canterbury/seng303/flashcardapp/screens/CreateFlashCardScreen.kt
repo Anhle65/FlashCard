@@ -86,14 +86,14 @@ fun CreateFlashCardScreen(navController: NavController,
             OutlinedTextField(
                 value = question,
                 onValueChange = {onQuestionChange(it)},
-                label = { Text("Input question here") },
+//                label = { Text("Input question here") },/
                 modifier = Modifier
                     .padding(16.dp)
                     .fillMaxWidth()
                     .drawBehind {
                         drawRoundRect(
                             color = Color.LightGray,
-                            cornerRadius = CornerRadius(16.dp.toPx()),
+                            cornerRadius = CornerRadius(8.dp.toPx()),
                         )
                     }
             )
@@ -133,13 +133,13 @@ fun CreateFlashCardScreen(navController: NavController,
                             createCardViewModel.updateAnswer(index, answer)
                             Log.d("Card Screen", "Input list answers after call the update method is $inputAnswers")
                             onListAnswerChange(inputAnswers)},
-                        label = { Text("Empty answer now") },
+//                        label = { Text("Empty answer now") },
                         modifier = Modifier
                             .padding(horizontal = 5.dp)
                             .drawBehind {
                                 drawRoundRect(
                                     color = Color.LightGray,
-                                    cornerRadius = CornerRadius(16.dp.toPx()),
+                                    cornerRadius = CornerRadius(8.dp.toPx()),
                                 )
                             }
                         )
