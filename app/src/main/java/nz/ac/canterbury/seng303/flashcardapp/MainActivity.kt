@@ -151,22 +151,6 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    FlashcardappTheme {
-        Greeting("Android")
-    }
-}
-
-@Composable
 fun FlashCard(navController: NavController) {
     Column(
         modifier = Modifier
@@ -182,13 +166,19 @@ fun FlashCard(navController: NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(onClick = { navController.navigate("CardList") }) {
+        Button(
+            modifier = Modifier.padding(10.dp),
+            onClick = { navController.navigate("CardList") }) {
             Text("View Flash Cards")
         }
-        Button(onClick = { navController.navigate("CreateFlashCards") }) {
+        Button(
+            modifier = Modifier.padding(10.dp),
+            onClick = { navController.navigate("CreateFlashCards") }) {
             Text("Create Flash Cards")
         }
-        Button(onClick = { navController.navigate("PlayerInformation") }) {
+        Button(
+            modifier = Modifier.padding(10.dp),
+            onClick = { navController.navigate("PlayerInformation") }) {
             Text("Play Flash Card")
         }
     }
