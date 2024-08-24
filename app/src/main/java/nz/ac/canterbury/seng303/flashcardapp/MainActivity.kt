@@ -95,6 +95,7 @@ class MainActivity : ComponentActivity() {
                                 cardId?.let { cardIdParam: String -> FlashCardScreen(cardIdParam, cardViewModel) }
                             }
                             composable("PlayFlashCard"){
+                                cardViewModel.resetCounter()
                                 PlayFlashCardScreen(navController, cardViewModel = cardViewModel)
                             }
                             composable("CreateFlashCards") {
