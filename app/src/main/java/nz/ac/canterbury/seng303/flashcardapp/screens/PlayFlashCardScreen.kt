@@ -70,7 +70,7 @@ fun PlayFlashCardScreen(navController: NavController, cardViewModel: FlashCardVi
                 .fillMaxSize()
                 .drawBehind {
                     drawRoundRect(
-                        color = Color.Cyan,
+                        color = Color(0xFFADD8E6),
                         cornerRadius = CornerRadius(16.dp.toPx()),
                     )
                 }
@@ -172,9 +172,11 @@ fun PlayFlashCardScreen(navController: NavController, cardViewModel: FlashCardVi
                                 if (currentQuestion < cardViewModel.totalQuestion - 1)
                                     currentQuestion += 1
                                 else {
+                                    cardViewModel.sortedRanking(cardViewModel.playerName, cardViewModel.counterCorrect)
                                     Log.e(
                                         "CARD_SCREEN",
-                                        "You have ${cardViewModel.counterCorrect} correct card in total"
+                                        "You have ${cardViewModel.counterCorrect} correct card in total, " +
+                                        "list ranking: ${cardViewModel.sortedRanking}"
                                     )
                                     navController.navigate("SummaryResult")
                                 }
