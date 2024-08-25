@@ -147,7 +147,7 @@ fun EditFlashCard(
             .padding(16.dp)
             .drawBehind {
                 drawRoundRect(
-                    color = Color.Cyan,
+                    color = Color(0xFFADD8E6),
                     cornerRadius = CornerRadius(16.dp.toPx()),
                 )
             }
