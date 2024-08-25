@@ -45,6 +45,7 @@ import nz.ac.canterbury.seng303.flashcardapp.screens.FlashCardListScreen
 import nz.ac.canterbury.seng303.flashcardapp.screens.FlashCardScreen
 import nz.ac.canterbury.seng303.flashcardapp.screens.PlayFlashCardScreen
 import nz.ac.canterbury.seng303.flashcardapp.screens.PlayerInformationScreen
+import nz.ac.canterbury.seng303.flashcardapp.screens.RankingScreen
 import nz.ac.canterbury.seng303.flashcardapp.screens.SummaryScreen
 import nz.ac.canterbury.seng303.flashcardapp.ui.theme.FlashcardappTheme
 import nz.ac.canterbury.seng303.flashcardapp.viewmodels.CreateCardViewModel
@@ -104,7 +105,6 @@ class MainActivity : ComponentActivity() {
                                     onPlayerNameChange = {newPlayer -> cardViewModel.setName(newPlayer)})
                             }
                             composable("PlayFlashCard"){
-//                                cardViewModel.resetCounter()
                                 PlayFlashCardScreen(navController, cardViewModel = cardViewModel)
                             }
                             composable("CreateFlashCards") {
@@ -142,6 +142,9 @@ class MainActivity : ComponentActivity() {
                             composable("SummaryResult") {
                                 SummaryScreen(navController, cardViewModel)
                             }
+                            composable("Ranking") {
+                                RankingScreen(navController, cardViewModel)
+                            }
                         }
                     }
                 }
@@ -158,7 +161,7 @@ fun FlashCard(navController: NavController) {
             .padding(16.dp)
             .drawBehind {
                 drawRoundRect(
-                    color = Color.Cyan,
+                    color = Color(0xFFADD8E6),
                     cornerRadius = CornerRadius(15.dp.toPx()),
                 )
             }
@@ -180,6 +183,11 @@ fun FlashCard(navController: NavController) {
             modifier = Modifier.padding(10.dp),
             onClick = { navController.navigate("PlayerInformation") }) {
             Text("Play Flash Card")
+        }
+        Button(
+            modifier = Modifier.padding(10.dp),
+            onClick = { navController.navigate("Ranking") }) {
+            Text("Ranking table")
         }
     }
 }
