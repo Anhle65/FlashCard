@@ -54,7 +54,7 @@ fun FlashCardListScreen(navController: NavController, cardViewModel: FlashCardVi
             .padding(16.dp)
             .drawBehind {
                 drawRoundRect(
-                    color = Color.Cyan,
+                    color = Color(0xFFADD8E6),
                     cornerRadius = CornerRadius(16.dp.toPx()),
                 )
             }
@@ -75,7 +75,6 @@ fun FlashCardListScreen(navController: NavController, cardViewModel: FlashCardVi
             items(cards.size) { index ->
                 CardItem(navController = navController, card = cards[index],
                     deleteCardFn = { id: Int -> cardViewModel.deleteCard(id) })
-                Divider() // Add a divider between items
             }
         }
     }
@@ -96,7 +95,6 @@ fun CardItem(navController: NavController, card: FlashCard, deleteCardFn: (id: I
                     cornerRadius = CornerRadius(15.dp.toPx()),
                 )
             },
-//        Arrangement.spacedBy(20.dp)
     ){
         Text(text = card.question,
             modifier = Modifier
@@ -120,11 +118,11 @@ fun CardItem(navController: NavController, card: FlashCard, deleteCardFn: (id: I
                 },
                 // When click on the search button, it goes to browser and search for the question on flash card
                 onClick = {
-                    val searchQuery = "${card.question}"    //Extract the query that will be parsed to the search intent
+                    val searchQuery = "${card.question}"
                     val searchIntent = Intent(Intent.ACTION_WEB_SEARCH).apply {
-                        putExtra(SearchManager.QUERY, searchQuery)  // Pass the string to search bar for searching
+                        putExtra(SearchManager.QUERY, searchQuery)
                     }
-                    context.startActivity(searchIntent)     // Launch the search activity
+                    context.startActivity(searchIntent)
                     Log.d("LIST_CARD", "Click on search button and search for ${card.question}")
                 })
             {
