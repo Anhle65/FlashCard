@@ -49,7 +49,7 @@ fun FlashCardScreen(cardId: String, cardViewModel: FlashCardViewModel){
     val card: FlashCard? = selectedCardState
     if (card != null) {
         val listAnswers by rememberSaveable { mutableStateOf(card.listAnswer.filter { it != "" }) }
-        val (selectedAnswer, onOptionSelected) = rememberSaveable { mutableStateOf("") }
+        val selectedAnswer = card.correctAnswer
         LazyColumn(
             modifier = Modifier
                 .padding(16.dp)
@@ -58,7 +58,7 @@ fun FlashCardScreen(cardId: String, cardViewModel: FlashCardViewModel){
                 .fillMaxSize()
                 .drawBehind {
                     drawRoundRect(
-                        color = Color.Cyan,
+                        color = Color(0xFFADD8E6),
                         cornerRadius = CornerRadius(16.dp.toPx()),
                     )
                 }
@@ -98,8 +98,9 @@ fun FlashCardScreen(cardId: String, cardViewModel: FlashCardViewModel){
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
                     RadioButton(
-                        selected = (listAnswers[index] == selectedAnswer),   //Set the sellected answer
-                        onClick = { onOptionSelected(listAnswers[index]) },
+                        selected = (listAnswers[index] == selectedAnswer),
+                        onClick = {},
+                        enabled = false,
                         colors = RadioButtonDefaults.colors(
                             selectedColor = MaterialTheme.colorScheme.primary,
                             unselectedColor = Color.Gray
