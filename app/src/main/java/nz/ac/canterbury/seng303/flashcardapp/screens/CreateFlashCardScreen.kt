@@ -49,7 +49,7 @@ fun CreateFlashCardScreen(navController: NavController,
                           createCardFn: (String, MutableList<String>, String) -> Unit
 ) {
     val context = LocalContext.current
-    var crrAns by rememberSaveable { mutableStateOf("")}
+    var crrAns by rememberSaveable { mutableStateOf(" ")}
     var listAnswers by rememberSaveable { mutableStateOf(listOf(mutableStateOf(""), mutableStateOf(""), mutableStateOf(""), mutableStateOf("")))}
     var checked by rememberSaveable { mutableStateOf(listOf(mutableStateOf(false), mutableStateOf(false), mutableStateOf(false), mutableStateOf(false))) }
     LazyColumn (
@@ -58,96 +58,111 @@ fun CreateFlashCardScreen(navController: NavController,
             .fillMaxWidth()
             .fillMaxHeight()
             .padding(16.dp)
-//            .verticalScroll(rememberScrollState())
             .drawBehind {
                 drawRoundRect(
-                    color = Color.Cyan,
+                    color = Color(0xFFADD8E6),
                     cornerRadius = CornerRadius(16.dp.toPx()),
                 )
             }
             .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
-//            .verticalScroll(true),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        item {
-            Text(text = "Add a new flash card",
-                textAlign = TextAlign.Center,
-                style = TextStyle(
-                    color = Color.Black,
-                    fontSize = MaterialTheme.typography.headlineLarge.fontSize
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
-            )
-        }
-        item {
-            OutlinedTextField(
-                value = question,
-                onValueChange = {onQuestionChange(it)},
-//                label = { Text("Input question here") },/
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-                    .drawBehind {
-                        drawRoundRect(
-                            color = Color.LightGray,
-                            cornerRadius = CornerRadius(8.dp.toPx()),
-                        )
-                    }
-            )
-            Log.d("Card Screen", "Question change to is $question")
-        }
-        items(listAnswers.size) { index ->
-            Log.d("Card Screen", "Answer ${listAnswers.size}, size of input list from createViewModel ${inputAnswers.size}, each element is ${inputAnswers}")
-            Box(
-                modifier = Modifier
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ){
-                Row (
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                ){
-                    Checkbox(
-                        checked = checked[index].value,
-                        onCheckedChange = {
-                            checked[index].value = it
-                            if (checked[index].value == false) {
-                                crrAns = ""
-                            } else {
-                                crrAns = listAnswers[index].value
-                            }
-                        }
-                    )
-                    Log.d("Card Screen", "Correct ans is $crrAns")
-                    OutlinedTextField(
-                        value = listAnswers[index].value,
-                        onValueChange = { answer ->
-                            listAnswers[index].value = answer
-                            inputAnswers[index] = answer
-                            Log.d("Card Screen", "Input list answers is $inputAnswers")
-                            createCardViewModel.updateAnswer(index, answer)
-                            Log.d("Card Screen", "Input list answers after call the update method is $inputAnswers")
-                            onListAnswerChange(inputAnswers)},
-//                        label = { Text("Empty answer now") },
-                        modifier = Modifier
-                            .padding(horizontal = 5.dp)
-                            .drawBehind {
-                                drawRoundRect(
-                                    color = Color.LightGray,
-                                    cornerRadius = CornerRadius(8.dp.toPx()),
-                                )
-                            }
-                        )
-                    Log.e("Create", "changed value $listAnswers")
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            for (index in 0..listAnswers.size - 1) {
+                if (listAnswers[index].value == crrAns) {
+                    checked[index].value = true
+                } else {
+                    checked[index].value = false
                 }
             }
-        }
-//        Log.d("Card Screen", "Answer ${listAnswers.size}, size of input list from createViewModel ${listAnswer.size}, each element is $listAnswer")
+            item {
+                Text(
+                    text = "Add a new flash card",
+                    textAlign = TextAlign.Center,
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontSize = MaterialTheme.typography.headlineLarge.fontSize
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                )
+            }
+            item {
+                OutlinedTextField(
+                    value = question,
+                    onValueChange = { onQuestionChange(it) },
+                    placeholder = { Text(text = "Input question here") },
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                        .drawBehind {
+                            drawRoundRect(
+                                color = Color.LightGray,
+                                cornerRadius = CornerRadius(8.dp.toPx()),
+                            )
+                        }
+                )
+                Log.d("Card Screen", "Question change to is $question")
+            }
+            items(listAnswers.size) { index ->
+                Log.d(
+                    "Card Screen",
+                    "Answer ${listAnswers.size}, size of input list from createViewModel ${inputAnswers.size}, each element is ${inputAnswers}"
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                    ) {
+                        Checkbox(
+                            checked = checked[index].value,
+                            onCheckedChange = {
+                                checked[index].value = it
+                                if (checked[index].value) {
+                                    crrAns = listAnswers[index].value
+                                } else {
+                                    if (checked.all { !it.value }) {
+                                        crrAns = " "
+                                    }
+                                }
+                            }
+                        )
+                        Log.d("Card Screen", "Correct ans is $crrAns")
+                        OutlinedTextField(
+                            value = listAnswers[index].value,
+                            placeholder = { Text(text = "Answer here") },
+                            onValueChange = { answer ->
+                                listAnswers[index].value = answer
+                                inputAnswers[index] = answer
+                                Log.d("Card Screen", "Input list answers is $inputAnswers")
+                                createCardViewModel.updateAnswer(index, answer)
+                                Log.d(
+                                    "Card Screen",
+                                    "Input list answers after call the update method is $inputAnswers"
+                                )
+                                onListAnswerChange(inputAnswers)
+                            },
+                            modifier = Modifier
+                                .padding(horizontal = 5.dp)
+                                .drawBehind {
+                                    drawRoundRect(
+                                        color = Color.LightGray,
+                                        cornerRadius = CornerRadius(8.dp.toPx()),
+                                    )
+                                }
+                        )
+                        Log.e("Create", "changed value $listAnswers")
+                    }
+                }
+            }
         item {
             Button(
                 onClick = {
@@ -185,7 +200,7 @@ fun CreateFlashCardScreen(navController: NavController,
                             Toast.LENGTH_SHORT
                         ).show()
 
-                    } else if (crrAns == "") {
+                    } else if (crrAns == " ") {
                         Toast.makeText(
                             context,
                             "You need to choose 1 correct answer",
