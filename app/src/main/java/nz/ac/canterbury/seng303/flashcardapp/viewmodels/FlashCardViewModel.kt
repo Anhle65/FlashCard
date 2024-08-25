@@ -29,6 +29,43 @@ class FlashCardViewModel(private val cardStorage: Storage<FlashCard>): ViewModel
         results[flashCard] = isCorrect
         Log.d("VIEW_MODEL", "${flashCard.question}, is correct $isCorrect")
     }
+
+    var ranking = mutableMapOf<String, Int>()
+        private set
+
+    var sortedRanking = mutableMapOf<String, Int>()
+        private set
+
+    fun sortedRanking(playerName: String, score: Int) {
+        if (ranking.keys.size < 4) {
+            ranking[playerName] = score
+        } else {
+            if (ranking.keys.size > 0) {
+                val minScore = ranking.entries.sortedWith(
+                    compareByDescending<Map.Entry<String, Int>> { it.value}
+                        .thenBy { it.key }).last()
+                if (score >= minScore.value) {
+                    if (minScore.key.compareTo(playerName) > 0) {
+                        ranking.remove(minScore.key)
+                        ranking[playerName] = score
+                    }
+                }
+            }
+        }
+
+//        val sorted = ranking.toList().sortedByDescending { (_, value) -> value }.toMap()
+//        ranking.toList().sortedByDescending { (_, value) -> value }.toMap()
+        val sorted = ranking.entries.sortedWith(
+            compareByDescending<Map.Entry<String, Int>> { it.value}
+                .thenBy { it.key })
+        sortedRanking.clear()
+        for (item in sorted) {
+            sortedRanking[item.key] = item.value
+            Log.d("VIEW_MODEL", "Print sorted map $sortedRanking")
+        }
+        Log.d("VIEW_MODEL", "Print map after sorted $sortedRanking and ranking $ranking")
+    }
+
     var totalQuestion = 0
         private set
 
