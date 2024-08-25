@@ -45,7 +45,7 @@ fun PlayerInformationScreen(navController: NavController, cardViewModel: FlashCa
             .padding(16.dp)
             .drawBehind {
                 drawRoundRect(
-                    color = Color.Cyan,
+                    color = Color(0xFFADD8E6),
                     cornerRadius = CornerRadius(16.dp.toPx()),
                 )
             }
@@ -67,6 +67,7 @@ fun PlayerInformationScreen(navController: NavController, cardViewModel: FlashCa
         OutlinedTextField(
             value = name,
             onValueChange = {onPlayerNameChange(it)},
+            placeholder = {Text(text = "Your name here")},
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth()
