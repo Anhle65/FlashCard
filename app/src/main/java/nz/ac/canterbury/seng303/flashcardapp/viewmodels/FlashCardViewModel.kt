@@ -37,7 +37,7 @@ class FlashCardViewModel(private val cardStorage: Storage<FlashCard>): ViewModel
         private set
 
     fun sortedRanking(playerName: String, score: Int) {
-        if (ranking.keys.size < 4) {
+        if (ranking.keys.size < 11) {
             ranking[playerName] = score
         } else {
             if (ranking.keys.size > 0) {
@@ -52,9 +52,6 @@ class FlashCardViewModel(private val cardStorage: Storage<FlashCard>): ViewModel
                 }
             }
         }
-
-//        val sorted = ranking.toList().sortedByDescending { (_, value) -> value }.toMap()
-//        ranking.toList().sortedByDescending { (_, value) -> value }.toMap()
         val sorted = ranking.entries.sortedWith(
             compareByDescending<Map.Entry<String, Int>> { it.value}
                 .thenBy { it.key })
