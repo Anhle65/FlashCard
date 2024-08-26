@@ -63,22 +63,18 @@ fun RankingScreen(navController: NavController, cardViewModel: FlashCardViewMode
         }
         if (players.size == 0) {
             item {
-                Row(
+                Box(
                     modifier = Modifier
+                        .fillMaxHeight()
                         .fillMaxSize(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
+                    contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = "No data to show",
                         style = TextStyle(
                             color = Color.Black,
                             fontSize = MaterialTheme.typography.headlineLarge.fontSize
-                        ),
-                        modifier = Modifier
-                            .weight(5f)
-                            .padding(horizontal = 8.dp)
-                            .align(Alignment.CenterVertically)
+                        )
                     )
                 }
             }
