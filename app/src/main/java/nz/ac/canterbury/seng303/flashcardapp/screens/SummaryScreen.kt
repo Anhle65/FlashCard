@@ -121,7 +121,7 @@ fun SummaryScreen (navController: NavController, cardViewModel: FlashCardViewMod
                                 .padding(horizontal = 5.dp),
                             imageVector = Icons.Outlined.Check,
                             contentDescription = "Correct Answer",
-                            tint = Color.Green
+                            tint = Color(0xFF006400)
                         )
                     }
                 }
