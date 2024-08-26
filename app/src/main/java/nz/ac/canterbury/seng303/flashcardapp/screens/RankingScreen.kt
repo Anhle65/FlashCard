@@ -24,7 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.navigation.NavController
 import nz.ac.canterbury.seng303.flashcardapp.viewmodels.FlashCardViewModel
 
@@ -61,7 +60,7 @@ fun RankingScreen(navController: NavController, cardViewModel: FlashCardViewMode
                     .padding(20.dp)
             )
         }
-        if (players.size == 0) {
+        if (players.isEmpty()) {
             item {
                 Box(
                     modifier = Modifier

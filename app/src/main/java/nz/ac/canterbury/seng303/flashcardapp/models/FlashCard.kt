@@ -1,4 +1,4 @@
-package nz.ac.canterbury.seng303.flashcardapp.models;
+package nz.ac.canterbury.seng303.flashcardapp.models
 
 data class FlashCard (
     val id: Int,
@@ -30,6 +30,6 @@ data class FlashCard (
         }
     }
     override fun getIdentifier(): Int {
-        return id;
+        return id
     }
 }

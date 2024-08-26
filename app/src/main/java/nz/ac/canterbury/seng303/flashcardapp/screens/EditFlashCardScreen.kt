@@ -1,7 +1,5 @@
 package nz.ac.canterbury.seng303.flashcardapp.screens
 
-import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.border
@@ -18,7 +16,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -27,14 +24,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -48,9 +40,7 @@ import androidx.navigation.NavController
 import nz.ac.canterbury.seng303.flashcardapp.models.FlashCard
 import nz.ac.canterbury.seng303.flashcardapp.viewmodels.EditCardViewModel
 import nz.ac.canterbury.seng303.flashcardapp.viewmodels.FlashCardViewModel
-//
-//
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun EditFlashCard(
     cardId: String,
@@ -97,47 +87,10 @@ fun EditFlashCard(
                     checked = checked.toMutableList().apply { removeLast() }
                     listAnswers = listAnswers.toMutableList().apply { removeLast() }
                 }
-//                for (index in 0..editCardViewModel.listAns.size - 1) {
-//                    listAnswers[index].value = editCardViewModel.listAns[index]
-//                    if (listAnswers[index].value == editCardViewModel.correctAns) {
-//                        checked[index].value = true
-//                    } else {
-//                        checked[index].value = false
-//                    }
-//                }
                 isInitialized = true
             }
-//            Log.e("EDIT_CARD", "New crrAnswe: ${editCardViewModel.correctAns}")
-//            for (index in 0..editCardViewModel.listAns.size - 1) {
-//                listAnswers[index].value = editCardViewModel.listAns[index]
-//                if (listAnswers[index].value == editCardViewModel.correctAns) {
-//                    checked[index].value = true
-//                } else {
-//                    checked[index].value = false
-//                }
-//                Log.e("EDIT_CARD", "New crrAnswe: ${editCardViewModel.correctAns}, the checkbox state in that index is ${checked[index]}")
-//            }
         }
     }
-
-
-//    var checked by rememberSaveable {
-//        mutableStateOf(
-//            editCardViewModel.listAns.map { answer ->
-//                mutableStateOf(answer == editCardViewModel.correctAns)
-//            }
-//        )
-//    }
-//    var listAnswers by rememberSaveable {
-//        mutableStateOf(
-//            editCardViewModel.listAns.map { mutableStateOf(it) }
-//        )
-//    }
-
-//    checked[indexCorrectAnswer].value = true
-
-//    Log.d("EDIT_SCREEN", "before change state List of check states ${checked.size} each states is: $checked")
-//    Log.d("EDIT_SCREEN", "List of check states ${checked.size} each states is: $checked")
 
     LazyColumn(
         modifier = Modifier
@@ -187,14 +140,10 @@ fun EditFlashCard(
             Log.d(
                 "Edit Card Screen",
                 "Number answer of card ${editCardViewModel.listAns.size}, each element is ${editCardViewModel.listAns}\n" +
-                        "Number edited answer ${listAnswers.size}, each element is ${listAnswers}"
+                        "Number edited answer ${listAnswers.size}, each element is $listAnswers"
             )
             listAnswers[index].value = editCardViewModel.listAns[index]
-            if (listAnswers[index].value == editCardViewModel.correctAns) {
-                checked[index].value = true
-            } else {
-                checked[index].value = false
-            }
+            checked[index].value = listAnswers[index].value == editCardViewModel.correctAns
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -209,7 +158,7 @@ fun EditFlashCard(
                 ) {
                     Checkbox(
                         checked = checked[index].value,
-                        onCheckedChange = {
+                        onCheckedChange = { it ->
                             checked[index].value = it
                             if (checked[index].value) {
                                 editCardViewModel.updateCorrectAnswer(listAnswers[index].value)
@@ -275,24 +224,6 @@ fun EditFlashCard(
                             editCardViewModel.correctAns
                         )
                     )
-                    val builder = AlertDialog.Builder(context)
-//                    if (question == "") {
-//                        Toast.makeText(
-//                            context,
-//                            "Could not create a flash card without question",
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                    } else if (listAnswer.all { it.isEmpty() }) {
-//                        Toast.makeText(
-//                            context,
-//                            "Could not create a flash card without answers",
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//
-//                    if (checked.all { false }) {
-////                        crrAns = ""
-//                        editCardViewModel.updateCorrectAnswer("")
-//                    }
                     if (editCardViewModel.correctAns == "") {
                         Toast.makeText(
                             context,
@@ -305,29 +236,9 @@ fun EditFlashCard(
                             "You need to have at least 2 answers",
                             Toast.LENGTH_SHORT
                         ).show()
-//                        builder.setMessage("Edit Card: ${flashCard.question}")
-//                            .setPositiveButton("Ok") { dialog, id -> /* Run some code on click */
-//                                createCardFn(question, listAnswer, crrAns)
-//                                onQuestionChange("")
-//                                onCrrAnswerChange("")
-//                                onListAnswerChange(emptyList<String>().toMutableList())
-//                                navController.navigate("cardList")
-//                            }.setNegativeButton("Cancel") { dialog, id ->
-//                                dialog.dismiss()
-//                    }
-//                    builder.setMessage("Edited flash card!")
-//                        .setPositiveButton("Ok") { dialog, id ->
-////                            editCardViewModel.setAnswers(listAnswers)
-//                            navController.navigate("CardList")
-//                        }
-//                        .setNegativeButton("Cancel") { dialog, id ->
-//                            dialog.dismiss()
-//                        }
                     } else {
                         navController.navigate("cardList")
                     }
-//                    val alert = builder.create()
-//                    alert.show()
                     }
                 ) {
                     Text(text = "Save and return")

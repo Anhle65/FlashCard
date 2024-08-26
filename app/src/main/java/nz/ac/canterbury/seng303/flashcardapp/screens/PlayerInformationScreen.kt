@@ -9,17 +9,12 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -81,7 +76,7 @@ fun PlayerInformationScreen(navController: NavController, cardViewModel: FlashCa
         Button(
             onClick = {
                 if (cardViewModel.playerName.isBlank()) {
-                    Log.d("PLAYER_INFOR", "Please enter your name")
+                    Log.d("PLAYER_INFORMATION", "Please enter your name")
                     Toast.makeText(
                         context,
                         "Please enter your name",

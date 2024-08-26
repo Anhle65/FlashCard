@@ -24,7 +24,7 @@ class CreateCardViewModel: ViewModel() {
         }
     }
 
-    var correctAns by mutableStateOf("")
+    var correctAns by mutableStateOf(" ")
         private set
 
     fun updateCorrectAnswer(newAnswer: String) {

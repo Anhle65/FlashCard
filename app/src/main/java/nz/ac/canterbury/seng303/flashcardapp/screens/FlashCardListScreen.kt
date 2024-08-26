@@ -15,14 +15,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -62,7 +60,7 @@ fun FlashCardListScreen(navController: NavController, cardViewModel: FlashCardVi
             .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
         Arrangement.spacedBy(10.dp)
     ){
-        if(cards.size == 0) {
+        if(cards.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center)
             {
@@ -133,7 +131,7 @@ fun CardItem(navController: NavController, card: FlashCard, deleteCardFn: (id: I
                     },
                 // When click on the search button, it goes to browser and search for the question on flash card
                 onClick = {
-                    val searchQuery = "${card.question}"
+                    val searchQuery = card.question
                     val searchIntent = Intent(Intent.ACTION_WEB_SEARCH).apply {
                         putExtra(SearchManager.QUERY, searchQuery)
                     }

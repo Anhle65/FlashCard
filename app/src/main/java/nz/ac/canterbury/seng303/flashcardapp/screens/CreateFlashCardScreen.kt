@@ -68,12 +68,8 @@ fun CreateFlashCardScreen(navController: NavController,
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            for (index in 0..listAnswers.size - 1) {
-                if (listAnswers[index].value == crrAns) {
-                    checked[index].value = true
-                } else {
-                    checked[index].value = false
-                }
+            for (index in listAnswers.indices) {
+                checked[index].value = listAnswers[index].value == crrAns
             }
             item {
                 Text(
@@ -108,7 +104,7 @@ fun CreateFlashCardScreen(navController: NavController,
             items(listAnswers.size) { index ->
                 Log.d(
                     "Card Screen",
-                    "Answer ${listAnswers.size}, size of input list from createViewModel ${inputAnswers.size}, each element is ${inputAnswers}"
+                    "Answer ${listAnswers.size}, size of input list from createViewModel ${inputAnswers.size}, each element is $inputAnswers"
                 )
                 Box(
                     modifier = Modifier
@@ -124,7 +120,7 @@ fun CreateFlashCardScreen(navController: NavController,
                     ) {
                         Checkbox(
                             checked = checked[index].value,
-                            onCheckedChange = {
+                            onCheckedChange = { it ->
                                 checked[index].value = it
                                 if (checked[index].value) {
                                     crrAns = listAnswers[index].value
@@ -152,6 +148,7 @@ fun CreateFlashCardScreen(navController: NavController,
                             },
                             modifier = Modifier
                                 .padding(horizontal = 5.dp)
+                                .fillMaxWidth()
                                 .drawBehind {
                                     drawRoundRect(
                                         color = Color.LightGray,
@@ -208,13 +205,13 @@ fun CreateFlashCardScreen(navController: NavController,
                         ).show()
                     } else {
                         builder.setMessage("Created Card: $question")
-                            .setPositiveButton("Ok") { dialog, id -> /* Run some code on click */
+                            .setPositiveButton("Ok") { _, _ ->
                                 createCardFn(question, inputAnswers, crrAns)
                                 onQuestionChange("")
                                 onCrrAnswerChange("")
                                 onListAnswerChange(emptyList<String>().toMutableList())
                                 navController.navigate("Home")
-                            }.setNegativeButton("Cancel") { dialog, id ->
+                            }.setNegativeButton("Cancel") { dialog, _ ->
                                 dialog.dismiss()
                             }
                         val alert = builder.create()
