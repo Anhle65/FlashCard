@@ -63,7 +63,12 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("io.insert-koin:koin-android:3.1.4")
     implementation("com.google.code.gson:gson:2.8.9")
-
+    implementation("androidx.core:core-splashscreen:1.0.0")
+    implementation ("androidx.compose.animation:animation:1.4.0")
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
