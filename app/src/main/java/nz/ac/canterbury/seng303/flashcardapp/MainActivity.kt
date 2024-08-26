@@ -85,6 +85,7 @@ class MainActivity : ComponentActivity() {
                     Box(modifier = Modifier.padding(it)) {
                         NavHost(navController = navController, startDestination = "Home") {
                             composable("Home") {
+                                cardViewModel.setName("")
                                 FlashCard(navController = navController)
                             }
                             composable(
