@@ -2,10 +2,12 @@ package nz.ac.canterbury.seng303.flashcardapp.screens
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.navigation.NavController
 import nz.ac.canterbury.seng303.flashcardapp.viewmodels.FlashCardViewModel
 
@@ -50,7 +53,7 @@ fun RankingScreen(navController: NavController, cardViewModel: FlashCardViewMode
                 text = "Ranking Table",
                 textAlign = TextAlign.Center,
                 style = TextStyle(
-                    color = Color.Blue,
+                    color = Color.Red,
                     fontSize = MaterialTheme.typography.headlineLarge.fontSize
                 ),
                 modifier = Modifier
@@ -58,7 +61,7 @@ fun RankingScreen(navController: NavController, cardViewModel: FlashCardViewMode
                     .padding(20.dp)
             )
         }
-        if(players.size == 0) {
+        if (players.size == 0) {
             item {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -79,36 +82,41 @@ fun RankingScreen(navController: NavController, cardViewModel: FlashCardViewMode
             }
         }
         items(players.size) { index->
-            var sizeText = 4f
             Card (modifier = Modifier
+                .height(70.dp)
                 .padding(horizontal = 25.dp, vertical = 5.dp)
                 .fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
             ){
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                ) {
-                    Text(
-                        text = players[index],
-                        style = TextStyle(
-                            color = Color.Black
-                        ),
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(),
+                    contentAlignment = Alignment.Center)
+                {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .weight(sizeText)
-                            .padding(horizontal = 8.dp)
-                    )
-                    Text(
-                        text = "${scores[index]}",
-                        style = TextStyle(
-                            color = Color.Black
-                        ),
-                        modifier = Modifier
-                            .weight(sizeText)
-                            .padding(horizontal = 8.dp)
-                    )
-                    sizeText -= 1f
+                            .fillMaxWidth()
+                            .fillMaxHeight(),
+                    ) {
+                        Text(
+                            text = "${index+1}. ${players[index]}",
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier
+                                .weight(20f)
+                                .fillMaxWidth()
+                                .align(Alignment.CenterVertically)
+                                .padding(horizontal = 16.dp)
+                        )
+                        Text(
+                            text = "${scores[index]}/${cardViewModel.totalQuestion}",
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier
+                                .weight(20f)
+                                .fillMaxWidth()
+                                .padding(horizontal = 8.dp)
+                        )
+                    }
                 }
             }
         }
@@ -125,6 +133,4 @@ fun RankingScreen(navController: NavController, cardViewModel: FlashCardViewMode
             }
         }
     }
-
-
 }
