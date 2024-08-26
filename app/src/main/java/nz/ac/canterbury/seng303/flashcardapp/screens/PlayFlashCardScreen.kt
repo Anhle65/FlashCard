@@ -4,6 +4,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +14,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
@@ -64,10 +67,8 @@ fun PlayFlashCardScreen(navController: NavController, cardViewModel: FlashCardVi
         }
         LazyColumn(
             modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
-                .fillMaxHeight()
                 .fillMaxSize()
+                .padding(16.dp)
                 .drawBehind {
                     drawRoundRect(
                         color = Color(0xFFADD8E6),
@@ -75,7 +76,6 @@ fun PlayFlashCardScreen(navController: NavController, cardViewModel: FlashCardVi
                     )
                 }
                 .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
-//            verticalArrangement = Arrangement.spacedBy(10.dp),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -133,13 +133,15 @@ fun PlayFlashCardScreen(navController: NavController, cardViewModel: FlashCardVi
             }
             item {
                 Row(modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxHeight(),
-                    horizontalArrangement = Arrangement.spacedBy(20.dp),
-                    verticalAlignment = Alignment.CenterVertically.apply { Alignment.BottomEnd }
+                    .padding(25.dp)
+                    .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = Alignment.Bottom
                 )
                 {
-                    Text(text = "${currentQuestion + 1}/${cardViewModel.totalQuestion}")
+                    Text(text = "${currentQuestion + 1}/${cardViewModel.totalQuestion}",
+                        modifier = Modifier
+                            .padding(vertical = 16.dp))
                     Button(
                         onClick = {
                             if (selectedAnswer == "") {
@@ -176,7 +178,7 @@ fun PlayFlashCardScreen(navController: NavController, cardViewModel: FlashCardVi
                                     Log.e(
                                         "CARD_SCREEN",
                                         "You have ${cardViewModel.counterCorrect} correct card in total, " +
-                                        "list ranking: ${cardViewModel.sortedRanking}"
+                                                "list ranking: ${cardViewModel.sortedRanking}"
                                     )
                                     navController.navigate("SummaryResult")
                                 }
@@ -202,7 +204,7 @@ fun PlayFlashCardScreen(navController: NavController, cardViewModel: FlashCardVi
                     )
                 }
                 .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
-            horizontalArrangement = Arrangement.Center,
+            horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
