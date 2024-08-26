@@ -64,9 +64,10 @@ fun RankingScreen(navController: NavController, cardViewModel: FlashCardViewMode
         if (players.size == 0) {
             item {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
                 ) {
                     Text(
                         text = "No data to show",
@@ -77,57 +78,62 @@ fun RankingScreen(navController: NavController, cardViewModel: FlashCardViewMode
                         modifier = Modifier
                             .weight(5f)
                             .padding(horizontal = 8.dp)
+                            .align(Alignment.CenterVertically)
                     )
                 }
             }
-        }
-        items(players.size) { index->
-            Card (modifier = Modifier
-                .height(70.dp)
-                .padding(horizontal = 25.dp, vertical = 5.dp)
-                .fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-            ){
-                Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(),
-                    contentAlignment = Alignment.Center)
-                {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
+        } else {
+            items(players.size) { index ->
+                Card(
+                    modifier = Modifier
+                        .height(70.dp)
+                        .padding(horizontal = 25.dp, vertical = 5.dp)
+                        .fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                ) {
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .fillMaxHeight(),
-                    ) {
-                        Text(
-                            text = "${index+1}. ${players[index]}",
-                            style = MaterialTheme.typography.bodyLarge,
+                        contentAlignment = Alignment.Center
+                    )
+                    {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
-                                .weight(20f)
                                 .fillMaxWidth()
-                                .align(Alignment.CenterVertically)
-                                .padding(horizontal = 16.dp)
-                        )
-                        Text(
-                            text = "${scores[index]}/${cardViewModel.totalQuestion}",
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier
-                                .weight(20f)
-                                .fillMaxWidth()
-                                .padding(horizontal = 8.dp)
-                        )
+                                .fillMaxHeight(),
+                        ) {
+                            Text(
+                                text = "${index + 1}. ${players[index]}",
+                                style = MaterialTheme.typography.bodyLarge,
+                                modifier = Modifier
+                                    .weight(20f)
+                                    .fillMaxWidth()
+                                    .align(Alignment.CenterVertically)
+                                    .padding(horizontal = 16.dp)
+                            )
+                            Text(
+                                text = "${scores[index]}/${cardViewModel.totalQuestion}",
+                                style = MaterialTheme.typography.bodyLarge,
+                                modifier = Modifier
+                                    .weight(20f)
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 8.dp)
+                            )
+                        }
                     }
                 }
             }
         }
         item {
-            Row (
+            Row(
                 horizontalArrangement = Arrangement.Absolute.Right,
                 verticalAlignment = Alignment.CenterVertically.apply { Alignment.BottomEnd }
             ) {
                 Button(
                     onClick = { navController.navigate("Home") }
-                ){
+                ) {
                     Text(text = "Back")
                 }
             }
