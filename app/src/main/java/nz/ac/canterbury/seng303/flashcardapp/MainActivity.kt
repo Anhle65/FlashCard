@@ -1,7 +1,10 @@
 package nz.ac.canterbury.seng303.flashcardapp
 
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.animation.AnticipateInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -29,8 +32,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.animation.doOnEnd
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavType
@@ -53,16 +56,28 @@ import nz.ac.canterbury.seng303.flashcardapp.viewmodels.EditCardViewModel
 import nz.ac.canterbury.seng303.flashcardapp.viewmodels.FlashCardViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel as koinViewModel
 
-
 class MainActivity : ComponentActivity() {
     private val cardViewModel: FlashCardViewModel by koinViewModel()
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        cardViewModel.loadDefaultCardsIfNoneExist()
+        splashScreen.setOnExitAnimationListener { splashScreenView ->
+            // Create custom animation.
+            val slideUp = ObjectAnimator.ofFloat(
+                splashScreenView,
+                View.TRANSLATION_Y,
+                0f,
+                -splashScreenView.height.toFloat()
+            )
+            slideUp.interpolator = AnticipateInterpolator()
+            slideUp.duration = 1500L
+            // Call SplashScreenView.remove at the end of the custom animation.
+            slideUp.doOnEnd { splashScreenView.remove() }
+            // Run animation.
+            slideUp.start()
+        }
         enableEdgeToEdge()
         setContent {
-//            enableEdgeToEdge()
             val editFlashCardViewModel: EditCardViewModel = viewModel()
             FlashcardappTheme {
                 val navController = rememberNavController()
