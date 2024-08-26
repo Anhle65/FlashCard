@@ -87,7 +87,7 @@ fun CardItem(navController: NavController, card: FlashCard, deleteCardFn: (id: I
         modifier = Modifier
             .fillMaxSize()
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(25.dp)
             .clickable { navController.navigate("FlashCard/${card.id}") } //go into the flash card when click
             .drawBehind {
                 drawRoundRect(
@@ -98,21 +98,21 @@ fun CardItem(navController: NavController, card: FlashCard, deleteCardFn: (id: I
     ){
         Text(text = card.question,
             modifier = Modifier
-                .padding(10.dp)
+                .padding(10.dp, 10.dp, 10.dp, 0.dp)
                 .fillMaxWidth())
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(horizontal = 25.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(50.dp)
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             IconButton(
                 modifier = Modifier
                     .size(50.dp)
                     .drawBehind {
                     drawRoundRect(
-                        color = Color.Blue,
+                        color = Color(0xFF1C0098),
                         cornerRadius = CornerRadius(25.dp.toPx()),
                     )
                 },
@@ -125,41 +125,43 @@ fun CardItem(navController: NavController, card: FlashCard, deleteCardFn: (id: I
                     context.startActivity(searchIntent)
                     Log.d("LIST_CARD", "Click on search button and search for ${card.question}")
                 })
-            {
-                Icon(
-                    imageVector = Icons.Outlined.Search,
-                    contentDescription = "Search",
-                    tint = Color.White,
-                    modifier = Modifier
-                        .width(30.dp)
-                )
-            }
+                {
+                    Icon(
+                        imageVector = Icons.Outlined.Search,
+                        contentDescription = "Search",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(30.dp)
+                    )
+                }
             IconButton(
                 modifier = Modifier
                     .size(50.dp)
                     .drawBehind {
                         drawRoundRect(
-                            color = Color.Blue,
+                            color = Color(0xFF1C0098),
                             cornerRadius = CornerRadius(25.dp.toPx()),
                     )
                 },
                 onClick = {
                 navController.navigate("EditCard/${card.id}")
             })
-            {
-                Icon(
-                    imageVector = Icons.Outlined.Edit,
-                    contentDescription = "Edit",
-                    tint = Color.White
-                )
-            }
+                {
+                    Icon(
+                        modifier = Modifier
+                            .size(30.dp),
+                        imageVector = Icons.Outlined.Edit,
+                        contentDescription = "Edit",
+                        tint = Color.White
+                    )
+                }
             IconButton(
                 modifier = Modifier
                     .size(50.dp)
                     .drawBehind {
                         drawRoundRect(
-                        color = Color.Blue,
-                        cornerRadius = CornerRadius(25.dp.toPx()),
+                            color = Color(0xFF1C0098),
+                            cornerRadius = CornerRadius(25.dp.toPx()),
                     )
                 },
                 onClick = {
@@ -176,13 +178,16 @@ fun CardItem(navController: NavController, card: FlashCard, deleteCardFn: (id: I
                     }
                 val alert = builder.create()
                 alert.show()
-                }) {
-                Icon(
-                    imageVector = Icons.Outlined.Delete,
-                    contentDescription = "Delete",
-                    tint = Color.White
-                )
-            }
+                })
+                {
+                    Icon(
+                        modifier = Modifier
+                            .size(30.dp),
+                        imageVector = Icons.Outlined.Delete,
+                        contentDescription = "Delete",
+                        tint = Color.White
+                    )
+                }
         }
     }
 
