@@ -168,7 +168,7 @@ fun PlayFlashCardScreen(navController: NavController, cardViewModel: FlashCardVi
                                         "You have ${cardViewModel.counterCorrect} correct card in total, " +
                                                 "list ranking: ${cardViewModel.sortedRanking}"
                                     )
-                                    navController.navigate("SummaryResult")
+                                    navController.navigate("LoadingScreen")
                                 }
                             }
                             selectedAnswer = ""
