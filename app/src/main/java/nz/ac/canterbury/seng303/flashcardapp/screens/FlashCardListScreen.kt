@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -61,20 +62,34 @@ fun FlashCardListScreen(navController: NavController, cardViewModel: FlashCardVi
             .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(16.dp)),
         Arrangement.spacedBy(10.dp)
     ){
-        Text(text = "Flash Cards",
-            textAlign = TextAlign.Center,
-            style = TextStyle(
-                color = Color.Black,
-                fontSize = MaterialTheme.typography.headlineMedium.fontSize
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp)
-        )
-        LazyColumn {
-            items(cards.size) { index ->
-                CardItem(navController = navController, card = cards[index],
-                    deleteCardFn = { id: Int -> cardViewModel.deleteCard(id) })
+        if(cards.size == 0) {
+            Box(modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center)
+            {
+                Text(
+                    text = "There are no cards created.\nPlease create some cards",
+                    textAlign = TextAlign.Center,
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontSize = MaterialTheme.typography.headlineMedium.fontSize
+                    ))
+            }
+        } else {
+            Text(text = "Flash Cards",
+                textAlign = TextAlign.Center,
+                style = TextStyle(
+                    color = Color.Black,
+                    fontSize = MaterialTheme.typography.headlineMedium.fontSize
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+            )
+            LazyColumn {
+                items(cards.size) { index ->
+                    CardItem(navController = navController, card = cards[index],
+                        deleteCardFn = { id: Int -> cardViewModel.deleteCard(id) })
+                }
             }
         }
     }
@@ -111,11 +126,11 @@ fun CardItem(navController: NavController, card: FlashCard, deleteCardFn: (id: I
                 modifier = Modifier
                     .size(50.dp)
                     .drawBehind {
-                    drawRoundRect(
-                        color = Color(0xFF1C0098),
-                        cornerRadius = CornerRadius(25.dp.toPx()),
-                    )
-                },
+                        drawRoundRect(
+                            color = Color(0xFF1C0098),
+                            cornerRadius = CornerRadius(25.dp.toPx()),
+                        )
+                    },
                 // When click on the search button, it goes to browser and search for the question on flash card
                 onClick = {
                     val searchQuery = "${card.question}"
@@ -141,8 +156,8 @@ fun CardItem(navController: NavController, card: FlashCard, deleteCardFn: (id: I
                         drawRoundRect(
                             color = Color(0xFF1C0098),
                             cornerRadius = CornerRadius(25.dp.toPx()),
-                    )
-                },
+                        )
+                    },
                 onClick = {
                 navController.navigate("EditCard/${card.id}")
             })
@@ -162,8 +177,8 @@ fun CardItem(navController: NavController, card: FlashCard, deleteCardFn: (id: I
                         drawRoundRect(
                             color = Color(0xFF1C0098),
                             cornerRadius = CornerRadius(25.dp.toPx()),
-                    )
-                },
+                        )
+                    },
                 onClick = {
                 val builder = AlertDialog.Builder(context)
                 builder.setMessage("Delete card: \"${card.question}\"?")
