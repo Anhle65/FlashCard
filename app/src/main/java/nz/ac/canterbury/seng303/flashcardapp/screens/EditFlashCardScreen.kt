@@ -178,9 +178,8 @@ fun EditFlashCard(
         item {
             OutlinedTextField(
                 value = editCardViewModel.question,
-//                onValueChange = { editCardViewModel.updateQuestion(it) },
                 onValueChange = {},
-//                label = { Text("Input question here") },
+                enabled = false,
                 modifier = Modifier
                     .padding(16.dp)
                     .fillMaxWidth()
