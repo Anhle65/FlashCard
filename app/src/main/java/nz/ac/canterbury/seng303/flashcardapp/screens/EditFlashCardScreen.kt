@@ -155,14 +155,6 @@ fun EditFlashCard(
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        for (index in 0..editCardViewModel.listAns.size - 1) {
-            listAnswers[index].value = editCardViewModel.listAns[index]
-            if (listAnswers[index].value == editCardViewModel.correctAns) {
-                checked[index].value = true
-            } else {
-                checked[index].value = false
-            }
-        }
         item {
             Text(text = "Edit flash card",
                 textAlign = TextAlign.Center,
@@ -197,6 +189,12 @@ fun EditFlashCard(
                 "Number answer of card ${editCardViewModel.listAns.size}, each element is ${editCardViewModel.listAns}\n" +
                         "Number edited answer ${listAnswers.size}, each element is ${listAnswers}"
             )
+            listAnswers[index].value = editCardViewModel.listAns[index]
+            if (listAnswers[index].value == editCardViewModel.correctAns) {
+                checked[index].value = true
+            } else {
+                checked[index].value = false
+            }
             Box(
                 modifier = Modifier
                     .fillMaxSize()
