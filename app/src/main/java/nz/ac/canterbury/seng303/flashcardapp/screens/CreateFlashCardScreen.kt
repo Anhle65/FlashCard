@@ -1,7 +1,6 @@
 package nz.ac.canterbury.seng303.flashcardapp.screens
 
 import android.app.AlertDialog
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -99,13 +98,8 @@ fun CreateFlashCardScreen(navController: NavController,
                             )
                         }
                 )
-                Log.d("Card Screen", "Question change to is $question")
             }
             items(listAnswers.size) { index ->
-                Log.d(
-                    "Card Screen",
-                    "Answer ${listAnswers.size}, size of input list from createViewModel ${inputAnswers.size}, each element is $inputAnswers"
-                )
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -131,19 +125,13 @@ fun CreateFlashCardScreen(navController: NavController,
                                 }
                             }
                         )
-                        Log.d("Card Screen", "Correct ans is $crrAns")
                         OutlinedTextField(
                             value = listAnswers[index].value,
                             placeholder = { Text(text = "Answer here") },
                             onValueChange = { answer ->
                                 listAnswers[index].value = answer
                                 inputAnswers[index] = answer
-                                Log.d("Card Screen", "Input list answers is $inputAnswers")
                                 createCardViewModel.updateAnswer(index, answer)
-                                Log.d(
-                                    "Card Screen",
-                                    "Input list answers after call the update method is $inputAnswers"
-                                )
                                 onListAnswerChange(inputAnswers)
                             },
                             modifier = Modifier
@@ -156,7 +144,6 @@ fun CreateFlashCardScreen(navController: NavController,
                                     )
                                 }
                         )
-                        Log.e("Create", "changed value $listAnswers")
                     }
                 }
             }

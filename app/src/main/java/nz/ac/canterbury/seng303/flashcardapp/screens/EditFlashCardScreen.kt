@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng303.flashcardapp.screens
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -137,11 +136,6 @@ fun EditFlashCard(
             )
         }
         items(listAnswers.size) { index ->
-            Log.d(
-                "Edit Card Screen",
-                "Number answer of card ${editCardViewModel.listAns.size}, each element is ${editCardViewModel.listAns}\n" +
-                        "Number edited answer ${listAnswers.size}, each element is $listAnswers"
-            )
             listAnswers[index].value = editCardViewModel.listAns[index]
             checked[index].value = listAnswers[index].value == editCardViewModel.correctAns
             Box(
@@ -169,12 +163,10 @@ fun EditFlashCard(
                             }
                         }
                     )
-                    Log.d("Card Screen", "Correct ans is ${editCardViewModel.correctAns}")
                     OutlinedTextField(
                         value = listAnswers[index].value,
                         onValueChange = {
                             listAnswers[index].value = it
-                            Log.e("EDIT_SCREEN", "New value ${listAnswers[index].value}, in edit view model ${listAnswers[index].value}")
                             editCardViewModel.updateAnswer(index, it)
                         },
                         modifier = Modifier
@@ -187,7 +179,6 @@ fun EditFlashCard(
                                 )
                             }
                     )
-                    Log.e("Edit screen", "changed value $listAnswers")
                 }
             }
         }

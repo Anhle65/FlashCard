@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng303.flashcardapp.screens
 
-import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -78,7 +77,6 @@ fun SummaryScreen (navController: NavController, cardViewModel: FlashCardViewMod
             )
         }
 
-        Log.d("SUMMARY", "$flashCards with $answers")
         items(flashCards.size) { index->
             Card (modifier = Modifier
                 .padding(horizontal = 25.dp, vertical = 5.dp)

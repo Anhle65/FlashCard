@@ -116,7 +116,6 @@ fun PlayFlashCardScreen(navController: NavController, cardViewModel: FlashCardVi
                         )
                     )
                     Text(text = shuffledAnswers[index])
-                    Log.d("Flash card screen", "selected answer: $selectedAnswer, Correct answer is: ${currentFlashCard.correctAnswer}")
                 }
             }
             item {
@@ -143,15 +142,12 @@ fun PlayFlashCardScreen(navController: NavController, cardViewModel: FlashCardVi
                                 if (selectedAnswer == currentFlashCard.correctAnswer) {
                                     cardViewModel.incrementCorrectCounter()
                                     cardViewModel.addResultCard(currentFlashCard, true)
-                                    Log.e("CARD_SCREEN", "${cardViewModel.results.size}")
-                                    Log.e("CARD_SCREEN", "YOU ARE CORRECT")
                                     Toast.makeText(
                                         context,
                                         "Your answer is correct",
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 } else {
-                                    Log.e("CARD_SCREEN", "YOU ARE WRONG")
                                     Toast.makeText(
                                         context,
                                         "Your answer is incorrect",
@@ -163,11 +159,6 @@ fun PlayFlashCardScreen(navController: NavController, cardViewModel: FlashCardVi
                                     currentQuestion += 1
                                 else {
                                     cardViewModel.sortedRanking(cardViewModel.playerName, cardViewModel.counterCorrect)
-                                    Log.e(
-                                        "CARD_SCREEN",
-                                        "You have ${cardViewModel.counterCorrect} correct card in total, " +
-                                                "list ranking: ${cardViewModel.sortedRanking}"
-                                    )
                                     navController.navigate("LoadingScreen")
                                 }
                             }

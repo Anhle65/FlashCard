@@ -1,6 +1,5 @@
 package nz.ac.canterbury.seng303.flashcardapp.screens
 
-import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -54,7 +53,7 @@ fun FlashCardScreen(cardId: String, cardViewModel: FlashCardViewModel){
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            item { Text(text = "Play flash cards",
+            item { Text(text = "Flash card",
                 style = MaterialTheme.typography.headlineLarge,
                 modifier = Modifier
                     .padding(16.dp)) }
@@ -95,7 +94,6 @@ fun FlashCardScreen(cardId: String, cardViewModel: FlashCardViewModel){
                         )
                     )
                     Text(text = listAnswers[index])
-                    Log.d("Flash card screen", "selected answer: $selectedAnswer correct answer is ${card.correctAnswer}")
                 }
             }
         }
