@@ -1,5 +1,5 @@
 # FlashCardApp
-
+An app let user to create their own flashcards and play.
 
 
 ## Getting started
